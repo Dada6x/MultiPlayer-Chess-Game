@@ -1,4 +1,4 @@
-import 'package:chess_game/multiplayer_chess_game.dart';
+import 'package:chess_game/presentation/multi_player/multiplayer_chess_game.dart';
 import 'package:chess_game/main.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -29,7 +29,7 @@ class _CreatingGameState extends State<CreatingGame> {
   Future<void> _createRoom() async {
     try {
       const uuid = Uuid();
-      final roomId = uuid.v4().substring(0, 8); // Short unique ID
+      final roomId = uuid.v4().substring(0, 8); 
 
       final newGame = bishop.Game(variant: bishop.Variant.standard());
 
@@ -53,7 +53,7 @@ class _CreatingGameState extends State<CreatingGame> {
 
   void _startGame() {
     if (_roomId != null) {
-      Get.to(() => MultplayerChessGame(
+      Get.to(() => MultiPlayerChessGame(
             roomId: _roomId!,
             playerColor: Squares.white,
           ));

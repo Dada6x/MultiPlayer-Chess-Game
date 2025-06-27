@@ -1,5 +1,5 @@
-import 'package:chess_game/boarding.dart';
-import 'package:chess_game/singleplayer_chess_game.dart';
+import 'package:chess_game/presentation/multi_player/boarding.dart';
+import 'package:chess_game/presentation/single_player/singleplayer_chess_game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';

@@ -4,21 +4,21 @@ import 'package:squares/squares.dart';
 import 'package:square_bishop/square_bishop.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class MultplayerChessGame extends StatefulWidget {
+class MultiPlayerChessGame extends StatefulWidget {
   final String roomId;
   final int playerColor; // Squares.white or Squares.black
 
-  const MultplayerChessGame({
+  const MultiPlayerChessGame({
     super.key,
     required this.roomId,
     required this.playerColor,
   });
 
   @override
-  State<MultplayerChessGame> createState() => _MultplayerChessGameState();
+  State<MultiPlayerChessGame> createState() => _MultiPlayerChessGameState();
 }
 
-class _MultplayerChessGameState extends State<MultplayerChessGame> {
+class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
   late bishop.Game game;
   late SquaresState state;
   bool isLoading = true;

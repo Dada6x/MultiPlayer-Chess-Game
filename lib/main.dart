@@ -1,10 +1,16 @@
-import 'package:chess_game/boarding.dart';
+import 'package:chess_game/core/app/controller/app_controller.dart';
+import 'package:chess_game/core/app/language/locale.dart';
+import 'package:chess_game/presentation/multi_player/boarding.dart';
 import 'package:chess_game/game_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:logger/logger.dart';
+import 'package:motion/motion.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 var debug = Logger(
@@ -15,7 +21,16 @@ var debug = Logger(
   printEmojis: true,
 ));
 
+SharedPreferences? userPref;
+bool isOffline = !Get.find<AppController>().isOffline.value;
+
 void main() async {
+  //! motion
+  await Motion.instance.initialize();
+  Motion.instance.setUpdateInterval(60.fps);
+  //!
+  Get.put(AppController());
+
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -39,8 +54,9 @@ class App extends StatelessWidget {
     return ScreenUtilInit(
       designSize: const Size(430, 932),
       child: GetMaterialApp(
+        translations: MyLocale(),
         debugShowCheckedModeBanner: false,
-        title: 'Squares Example',
+        title: 'Chess Game',
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
@@ -50,21 +66,32 @@ class App extends StatelessWidget {
   }
 }
 
+//! features To add
+// online offline support
+// move sounds
+// win confetti
+// lose/draw
+// splash screen
+// loading screen before each game
+// game menu
+// Boards theme
+// QR code for sharing room_id
+//  Localization → Multilingual support (e.g., Arabic/English).
 
+// ! chess Logic
+// dead pieces
+// timer for each turn then it will pick an random move
+// dispose the room after the game is finished
+// leave the game
+// make it wait for the other player to join
 
-
-
+//@ later
+// add authentication ,
+// add usernames for each one
+// add preview , people can join to see the game but they can play or move any piece
 
 /*
-!an Move 
-{
-  "color": "w",
-  "from": "e2",
-  "to": "e4",
-  "flags": "b",
-  "piece": "p",
-  "san": "e4"
-}
+
 
 !chess ascii 
 r n b q k b n r

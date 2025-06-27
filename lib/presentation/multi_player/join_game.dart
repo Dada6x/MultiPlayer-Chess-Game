@@ -1,4 +1,4 @@
-import 'package:chess_game/multiplayer_chess_game.dart';
+import 'package:chess_game/presentation/multi_player/multiplayer_chess_game.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
@@ -50,7 +50,7 @@ class _JoinGameState extends State<JoinGame> {
     setState(() => _loading = false);
 
     if (exists) {
-      Get.to(() => MultplayerChessGame(
+      Get.to(() => MultiPlayerChessGame(
             roomId: roomId,
             playerColor: Squares.black,
           ));

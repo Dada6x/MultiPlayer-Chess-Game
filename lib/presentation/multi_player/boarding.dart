@@ -1,5 +1,5 @@
-import 'package:chess_game/creating_game.dart';
-import 'package:chess_game/join_game.dart';
+import 'package:chess_game/presentation/multi_player/creating_game.dart';
+import 'package:chess_game/presentation/multi_player/join_game.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
