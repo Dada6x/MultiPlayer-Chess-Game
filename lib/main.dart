@@ -26,12 +26,12 @@ bool isOffline = !Get.find<AppController>().isOffline.value;
 
 void main() async {
   //! motion
+  WidgetsFlutterBinding.ensureInitialized();
   await Motion.instance.initialize();
   Motion.instance.setUpdateInterval(60.fps);
   //!
   Get.put(AppController());
 
-  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,

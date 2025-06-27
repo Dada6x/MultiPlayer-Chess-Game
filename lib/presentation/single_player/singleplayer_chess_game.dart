@@ -1,3 +1,4 @@
+import 'package:chess_game/main.dart';
 import 'package:flutter/material.dart';
 import 'package:bishop/bishop.dart' as bishop;
 import 'package:squares/squares.dart';
@@ -13,8 +14,10 @@ class SinglePlayerChessGame extends StatefulWidget {
 class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
   late bishop.Game game;
   late SquaresState state;
-  bool flipBoard = false;
   bool aiThinking = false;
+
+  Map<String, int> capturedByWhite = {};
+  Map<String, int> capturedByBlack = {};
 
   @override
   void initState() {
@@ -22,33 +25,40 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
     _startNewGame();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
   void _startNewGame() {
     game = bishop.Game(variant: bishop.Variant.standard());
     state = game.squaresState(Squares.white);
+    capturedByWhite = {};
+    capturedByBlack = {};
     setState(() {});
   }
 
   Future<void> _onMove(Move move) async {
-    if (aiThinking) return;
+    if (aiThinking || game.result != null) return;
 
     final moved = game.makeSquaresMove(move);
     if (moved) {
-      setState(() => state = game.squaresState(Squares.white));
+      setState(() {
+        state = game.squaresState(Squares.white);
+      });
+
+      if (game.result != null) {
+        _showGameResultDialog();
+        return;
+      }
 
       if (game.turn == bishop.Bishop.black) {
         aiThinking = true;
-        await Future.delayed(const Duration(milliseconds: 700));
-
+        await Future.delayed(const Duration(milliseconds: 600));
         game.makeRandomMove();
         setState(() {
           state = game.squaresState(Squares.white);
           aiThinking = false;
         });
+
+        if (game.result != null) {
+          _showGameResultDialog();
+        }
       }
     }
   }
@@ -61,6 +71,32 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
         state = game.squaresState(Squares.white);
       });
     }
+  }
+
+  void _showGameResultDialog() {
+    final result = game.result;
+    if (result == null) return;
+    debug.i(result.readable);
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Game Over"),
+        content: Text(result.readable),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _startNewGame();
+            },
+            child: const Text("New Game"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Close"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -79,28 +115,32 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
           ),
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          RepaintBoundary(
-            child: BoardController(
-              animatePieces: true,
-              state: state.board,
-              playState: state.state,
-              pieceSet: PieceSet.merida(),
-              theme: BoardTheme.brown,
-              moves: state.moves,
-              onMove: _onMove,
-              onPremove: _onMove,
-              markerTheme: MarkerTheme(
-                empty: MarkerTheme.dot,
-                piece: MarkerTheme.corners(),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const SizedBox(height: 4),
+            RepaintBoundary(
+              child: BoardController(
+                animatePieces: true,
+                state: state.board,
+                playState: state.state,
+                pieceSet: PieceSet.merida(),
+                theme: BoardTheme.brown,
+                moves: state.moves,
+                onMove: _onMove,
+                onPremove: _onMove,
+                markerTheme: MarkerTheme(
+
+                  empty: MarkerTheme.dot,
+                  piece: MarkerTheme.corners(BorderSide.strokeAlignCenter),
+                ),
+                promotionBehaviour: PromotionBehaviour.autoPremove,
               ),
-              promotionBehaviour: PromotionBehaviour.autoPremove,
             ),
-          ),
-          const SizedBox(height: 20),
-        ],
+            const SizedBox(height: 4),
+          ],
+        ),
       ),
     );
   }
