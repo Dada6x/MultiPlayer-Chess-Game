@@ -45,6 +45,7 @@ dependencies:
   flutter_svg: ^2.0.17
   neon: ^0.1.0
   motion: ^2.0.1
+  confetti: ^0.8.0 
   squares: ^1.2.1
   lottie: any
   share_plus: any

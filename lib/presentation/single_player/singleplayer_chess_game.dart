@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:bishop/bishop.dart' as bishop;
 import 'package:squares/squares.dart';
 import 'package:square_bishop/square_bishop.dart';
+import 'package:confetti/confetti.dart';
 
 class SinglePlayerChessGame extends StatefulWidget {
   const SinglePlayerChessGame({super.key});
@@ -16,20 +17,29 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
   late SquaresState state;
   bool aiThinking = false;
 
-  Map<String, int> capturedByWhite = {};
-  Map<String, int> capturedByBlack = {};
+  late ConfettiController _confettiController;
 
   @override
   void initState() {
     super.initState();
+
+    _confettiController =
+        ConfettiController(duration: const Duration(seconds: 4));
+    _confettiController.play();
+
     _startNewGame();
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
   }
 
   void _startNewGame() {
     game = bishop.Game(variant: bishop.Variant.standard());
     state = game.squaresState(Squares.white);
-    capturedByWhite = {};
-    capturedByBlack = {};
+
     setState(() {});
   }
 
@@ -65,8 +75,8 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
 
   void _undoMove() {
     if (game.history.length >= 2) {
-      game.undo(); // Undo AI move
-      game.undo(); // Undo player move
+      game.undo();
+      game.undo();
       setState(() {
         state = game.squaresState(Squares.white);
       });
@@ -77,6 +87,12 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
     final result = game.result;
     if (result == null) return;
     debug.i(result.readable);
+    //  Drawn by stalemate
+
+    if (result.readable == "White won by checkmate") {
+      _confettiController.play();
+    }
+
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
@@ -120,23 +136,43 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const SizedBox(height: 4),
-            RepaintBoundary(
-              child: BoardController(
-                animatePieces: true,
-                state: state.board,
-                playState: state.state,
-                pieceSet: PieceSet.merida(),
-                theme: BoardTheme.brown,
-                moves: state.moves,
-                onMove: _onMove,
-                onPremove: _onMove,
-                markerTheme: MarkerTheme(
-
-                  empty: MarkerTheme.dot,
-                  piece: MarkerTheme.corners(BorderSide.strokeAlignCenter),
+            Stack(
+              alignment: Alignment.topCenter,
+              children: [
+                RepaintBoundary(
+                  child: BoardController(
+                    animatePieces: true,
+                    state: state.board,
+                    playState: state.state,
+                    pieceSet: PieceSet.merida(),
+                    theme: BoardTheme.brown,
+                    moves: state.moves,
+                    onMove: _onMove,
+                    onPremove: _onMove,
+                    markerTheme: MarkerTheme(
+                      empty: MarkerTheme.dot,
+                      piece: MarkerTheme.corners(),
+                    ),
+                    promotionBehaviour: PromotionBehaviour.autoPremove,
+                  ),
                 ),
-                promotionBehaviour: PromotionBehaviour.autoPremove,
-              ),
+                ConfettiWidget(
+                  confettiController: _confettiController,
+                  blastDirectionality: BlastDirectionality.explosive,
+                  shouldLoop: false,
+                  numberOfParticles: 50,
+                  colors: Colors.primaries,
+
+                  //  const [
+                  //   Colors.green,
+                  //   Colors.blue,
+                  //   Colors.pink,
+                  //   Colors.orange,
+                  //   Colors.indigo,
+                  //   Colors.yellow,
+                  // ],
+                ),
+              ],
             ),
             const SizedBox(height: 4),
           ],

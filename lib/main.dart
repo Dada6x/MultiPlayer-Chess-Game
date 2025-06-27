@@ -1,6 +1,5 @@
 import 'package:chess_game/core/app/controller/app_controller.dart';
 import 'package:chess_game/core/app/language/locale.dart';
-import 'package:chess_game/presentation/multi_player/boarding.dart';
 import 'package:chess_game/game_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -89,6 +88,8 @@ class App extends StatelessWidget {
 // add authentication ,
 // add usernames for each one
 // add preview , people can join to see the game but they can play or move any piece
+// make an point System ?? to unlock things inside the application like themes or something like that 
+// you get points each time you win , against player or the AI
 
 /*
 
