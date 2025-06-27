@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:squares/squares.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bishop/bishop.dart' as bishop;
-
+import 'package:qr_flutter/qr_flutter.dart';
 import 'package:uuid/uuid.dart';
 
 class CreatingGame extends StatefulWidget {
@@ -29,7 +29,7 @@ class _CreatingGameState extends State<CreatingGame> {
   Future<void> _createRoom() async {
     try {
       const uuid = Uuid();
-      final roomId = uuid.v4().substring(0, 8); 
+      final roomId = uuid.v4().substring(0, 8);
 
       final newGame = bishop.Game(variant: bishop.Variant.standard());
 
@@ -61,6 +61,7 @@ class _CreatingGameState extends State<CreatingGame> {
   }
 
   @override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Create Game')),
@@ -80,6 +81,13 @@ class _CreatingGameState extends State<CreatingGame> {
                           _roomId!,
                           style: const TextStyle(
                               fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        const Icon(Icons.copy),
+                        const SizedBox(height: 20),
+                        QrImageView(
+                          
+                          data: _roomId!,
+                          size: 150,
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(

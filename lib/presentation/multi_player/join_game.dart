@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:squares/squares.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 
 class JoinGame extends StatefulWidget {
   const JoinGame({super.key});
@@ -59,6 +60,8 @@ class _JoinGameState extends State<JoinGame> {
     }
   }
 
+// ...
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -84,6 +87,31 @@ class _JoinGameState extends State<JoinGame> {
               child: _loading
                   ? const CircularProgressIndicator()
                   : const Text("Join Game"),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    content: SizedBox(
+                      width: 300,
+                      height: 300,
+                      child: MobileScanner(
+                        onDetect: (barcodes) {
+                          final code = barcodes.barcodes.first.displayValue;
+                          if (code != null) {
+                            Navigator.pop(context);
+                            _controller.text = code.toString();
+                            _onSubmit();
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                );
+              },
+              child: const Text("Scan QR Code"),
             ),
           ]),
         ),

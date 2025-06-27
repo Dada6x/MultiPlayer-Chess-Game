@@ -1,3 +1,4 @@
+import 'package:chess_game/main.dart';
 import 'package:flutter/material.dart';
 import 'package:bishop/bishop.dart' as bishop;
 import 'package:squares/squares.dart';
@@ -71,6 +72,9 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
               );
               setState(() {
                 state = game.squaresState(widget.playerColor);
+                if (game.result != null) {
+                  _showGameResultDialog();
+                }
               });
             }
           }
@@ -98,6 +102,31 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
         print('❌ Error updating move: $e');
       }
     }
+  }
+
+  void _showGameResultDialog() {
+    final result = game.result;
+    if (result == null) return;
+    debug.i(result.readable);
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text("Game Over"),
+        content: Text(result.readable),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: const Text("New Game"),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Close"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
