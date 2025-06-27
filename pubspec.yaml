@@ -51,7 +51,7 @@ dependencies:
   share_plus: any
   bounce: ^1.0.2
   skeletonizer: ^1.4.3
-
+  card_swiper: ^3.0.1
   get: ^4.7.2
   uuid: ^3.0.7
   bishop: ^1.4.4
