@@ -1,4 +1,5 @@
 import 'package:chess_game/boarding.dart';
+import 'package:chess_game/singleplayer_chess_game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -23,7 +24,10 @@ class GameMenu extends StatelessWidget {
               height: 50.h,
             ),
             ElevatedButton(
-                onPressed: () {}, child: const Text("SinglePlayer ")),
+                onPressed: () {
+                  Get.to(const SinglePlayerChessGame());
+                },
+                child: const Text("SinglePlayer ")),
             SizedBox(
               height: 50.h,
             ),

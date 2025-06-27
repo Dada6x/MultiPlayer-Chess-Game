@@ -115,12 +115,10 @@ class _MultplayerChessGameState extends State<MultplayerChessGame> {
                   game.turn == bishop.Bishop.white
                       ? "White's Turn"
                       : "Black's Turn",
-                  style: TextStyle(
+                  style: const TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: game.turn == bishop.Bishop.white
-                        ? Colors.white
-                        : Colors.black,
+                    color: Colors.black,
                   ),
                 ),
                 const SizedBox(height: 10),
