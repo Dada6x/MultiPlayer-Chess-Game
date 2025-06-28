@@ -65,7 +65,7 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
           if (event.isNotEmpty) {
             final newFen = event.first['fen'];
             if (newFen != game.fen) {
-              print('[📥 Realtime] New FEN received: $newFen');
+              print('[ Realtime] New FEN received: $newFen');
               game = bishop.Game(
                 fen: newFen,
                 variant: bishop.Variant.standard(),

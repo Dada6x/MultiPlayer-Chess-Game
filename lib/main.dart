@@ -1,6 +1,6 @@
 import 'package:chess_game/core/app/controller/app_controller.dart';
 import 'package:chess_game/core/app/language/locale.dart';
-import 'package:chess_game/game_menu.dart';
+import 'package:chess_game/presentation/game_menu/game_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

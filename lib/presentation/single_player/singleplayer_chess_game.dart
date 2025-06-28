@@ -25,8 +25,6 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
 
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 4));
-    _confettiController.play();
-
     _startNewGame();
   }
 
@@ -87,12 +85,11 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
     final result = game.result;
     if (result == null) return;
     debug.i(result.readable);
-    //  Drawn by stalemate
 
     if (result.readable == "White won by checkmate") {
       _confettiController.play();
     }
-
+    const Duration(seconds: 4);
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
