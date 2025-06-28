@@ -1,7 +1,11 @@
+import 'package:chess_game/core/constants/colors.dart';
 import 'package:chess_game/presentation/multi_player/multiplayer_chess_game.dart';
 import 'package:chess_game/main.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:iconify_flutter_plus/iconify_flutter_plus.dart';
+import 'package:iconify_flutter_plus/icons/ci.dart';
 import 'package:squares/squares.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:bishop/bishop.dart' as bishop;
@@ -64,7 +68,7 @@ class _CreatingGameState extends State<CreatingGame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Create Game')),
+      appBar: AppBar(title: const Text('Create a Room')),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -77,15 +81,30 @@ class _CreatingGameState extends State<CreatingGame> {
                       children: [
                         const Text("Send this Room ID to Your Friend:"),
                         const SizedBox(height: 10),
-                        SelectableText(
-                          _roomId!,
-                          style: const TextStyle(
-                              fontSize: 24, fontWeight: FontWeight.bold),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            SelectableText(
+                              _roomId!,
+                              style: const TextStyle(
+                                  fontSize: 24, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(
+                              width: 10,
+                            ),
+                            IconButton(
+                                onPressed: () {},
+                                icon: Iconify(
+                                  Ci.copy,
+                                  size: 29.sp,
+                                  color: grey,
+                                ))
+                          ],
                         ),
-                        const Icon(Icons.copy),
                         const SizedBox(height: 20),
                         QrImageView(
-                          
+                          backgroundColor: white,
+                          // embeddedImage: AssetImage(""),
                           data: _roomId!,
                           size: 150,
                         ),

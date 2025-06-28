@@ -11,8 +11,7 @@ class AppController extends GetxController {
   RxBool isArabic = true.obs;
   RxBool isOffline = true.obs;
 
-
-
+  late BuildContext context;
 
   // change language
   void changeLang(String codeLang) {
@@ -33,7 +32,6 @@ class AppController extends GetxController {
             isFirstCheck = false;
             break;
           } else {
-
             showSuccessSnackbar("You're connected back");
             break;
           }
@@ -44,15 +42,13 @@ class AppController extends GetxController {
             isFirstCheck = false;
             break;
           } else {
-
             showErrorSnackbar("No internet connection");
+
             break;
           }
       }
     });
   }
-
-
 
   @override
   void onInit() {

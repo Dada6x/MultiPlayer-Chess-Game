@@ -26,11 +26,11 @@ bool isOffline = !Get.find<AppController>().isOffline.value;
 void main() async {
   //! motion
   WidgetsFlutterBinding.ensureInitialized();
-  await Motion.instance.initialize();
-  Motion.instance.setUpdateInterval(60.fps);
+  // await Motion.instance.initialize();
+  // Motion.instance.setUpdateInterval(60.fps);
   //!
-  Get.put(AppController());
 
+  Get.put(AppController());
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -67,7 +67,7 @@ class App extends StatelessWidget {
 
 
 //! features To add
-// online offline support
+// online offline support 
 // move sounds
 // win confetti
 // lose/draw
@@ -77,6 +77,7 @@ class App extends StatelessWidget {
 // Boards theme
 // QR code for sharing room_id
 //  Localization → Multilingual support (e.g., Arabic/English).
+
 
 // ! chess Logic
 // dead pieces
@@ -93,6 +94,10 @@ class App extends StatelessWidget {
 // you get points each time you win , against player or the AI
 
 /*
+
+
+
+useful shit i want 
 
 
 !chess ascii 

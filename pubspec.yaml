@@ -54,6 +54,7 @@ dependencies:
   card_swiper: ^3.0.1
   get: ^4.7.2
   uuid: ^3.0.7
+  animations: ^2.0.0
   bishop: ^1.4.4
   square_bishop: ^0.3.0
   supabase_flutter: ^2.9.1
