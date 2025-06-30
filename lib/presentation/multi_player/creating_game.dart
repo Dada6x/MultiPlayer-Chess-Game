@@ -40,6 +40,7 @@ class _CreatingGameState extends State<CreatingGame> {
       await Supabase.instance.client.from('games').insert({
         'id': roomId,
         'fen': newGame.fen,
+        'white_player':"Yahea_Create"
       });
 
       setState(() {
@@ -58,6 +59,7 @@ class _CreatingGameState extends State<CreatingGame> {
   void _startGame() {
     if (_roomId != null) {
       Get.to(() => MultiPlayerChessGame(
+          my_name: "Yahea_Create",
             roomId: _roomId!,
             playerColor: Squares.white,
           ));
@@ -112,7 +114,8 @@ class _CreatingGameState extends State<CreatingGame> {
                         ElevatedButton(
                           onPressed: _startGame,
                           child: const Text("Start Game"),
-                        )
+                        ),
+                        
                       ],
                     ),
         ),

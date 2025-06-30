@@ -79,6 +79,15 @@ class App extends StatelessWidget {
 //  Localization → Multilingual support (e.g., Arabic/English).
 
 
+//@ bigg time idea from abdo.
+// instead of sending the Whole FEN send just the last move in this way it will still work faster and it wont render the whole chess map 
+// just the move happend 
+
+
+//!!!!!!!!!!!!!!!!!!!! make it with webSocket via that indian dude 
+// https://www.youtube.com/watch?v=Aut-wfXacXg
+
+//! 
 // ! chess Logic
 // dead pieces
 // timer for each turn then it will pick an random move

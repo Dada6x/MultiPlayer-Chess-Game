@@ -51,7 +51,13 @@ class _JoinGameState extends State<JoinGame> {
     setState(() => _loading = false);
 
     if (exists) {
+      // Set black_player in the game row
+      await Supabase.instance.client
+          .from('games')
+          .update({'black_player': 'yahea_join'}).eq('id', roomId);
+
       Get.to(() => MultiPlayerChessGame(
+            my_name: "yahea_join",
             roomId: roomId,
             playerColor: Squares.black,
           ));
@@ -111,7 +117,10 @@ class _JoinGameState extends State<JoinGame> {
                   ),
                 );
               },
-              child: const Text("Scan QR Code"),
+              child: const Text(
+                "Scan QR Code",
+                style: TextStyle(),
+              ),
             ),
           ]),
         ),

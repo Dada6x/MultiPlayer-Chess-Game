@@ -1,9 +1,9 @@
-import 'package:chess_game/main.dart';
-import 'package:flutter/material.dart';
 import 'package:bishop/bishop.dart' as bishop;
-import 'package:squares/squares.dart';
-import 'package:square_bishop/square_bishop.dart';
 import 'package:confetti/confetti.dart';
+import 'package:flutter/material.dart';
+import 'package:square_bishop/square_bishop.dart';
+import 'package:squares/squares.dart';
+import 'package:chess_game/main.dart';
 
 class SinglePlayerChessGame extends StatefulWidget {
   const SinglePlayerChessGame({super.key});
@@ -37,7 +37,6 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
   void _startNewGame() {
     game = bishop.Game(variant: bishop.Variant.standard());
     state = game.squaresState(Squares.white);
-
     setState(() {});
   }
 
@@ -63,7 +62,6 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
           state = game.squaresState(Squares.white);
           aiThinking = false;
         });
-
         if (game.result != null) {
           _showGameResultDialog();
         }
@@ -85,7 +83,6 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
     final result = game.result;
     if (result == null) return;
     debug.i(result.readable);
-
     if (result.readable == "White won by checkmate") {
       _confettiController.play();
     }
@@ -141,8 +138,8 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
                     animatePieces: true,
                     state: state.board,
                     playState: state.state,
-                    pieceSet: PieceSet.merida(),
-                    theme: BoardTheme.brown,
+                    pieceSet: PieceSet.fine(),
+                    theme: BoardTheme.fine,
                     moves: state.moves,
                     onMove: _onMove,
                     onPremove: _onMove,
@@ -159,15 +156,6 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
                   shouldLoop: false,
                   numberOfParticles: 50,
                   colors: Colors.primaries,
-
-                  //  const [
-                  //   Colors.green,
-                  //   Colors.blue,
-                  //   Colors.pink,
-                  //   Colors.orange,
-                  //   Colors.indigo,
-                  //   Colors.yellow,
-                  // ],
                 ),
               ],
             ),
@@ -178,41 +166,3 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
     );
   }
 }
-
-// /// Cyberpunk neon pink & blue color scheme for BoardTheme.
-// class CyberpunkBoardTheme extends BoardTheme {
-//   CyberpunkBoardTheme()
-//       : super(
-//           lightSquare:
-//               Color(0xFF353965), // very dark navy blue for light squares
-//           darkSquare: Color(0xFF2F325A), // darker blue for dark squares
-
-//           check: Color(0xFFFF3CAC), // neon pink for check highlight
-//           checkmate: Color(0xFF00FFF7), // neon cyan for checkmate highlight
-
-//           previous:
-//               Color(0x66FF00FF), // translucent neon magenta for previous move
-//           selected:
-//               Color(0x66FF69B4), // translucent hot pink for selected squares
-//           premove: Color(0x6600FFFF), // translucent bright cyan for premoves
-//         );
-        
-// }
-// class BoardThemeCustom extends BoardTheme {
-//   BoardThemeCustom()
-//       : super(
-//           lightSquare:
-//               Color(0xFFE8EDF9), // very dark navy blue for light squares
-//           darkSquare: Color(0xFFB7C0D8), // darker blue for dark squares
-
-//           check: Color(0xFFFF3CAC), // neon pink for check highlight
-//           checkmate: Colors.red, // neon cyan for checkmate highlight
-
-//           previous:
-//               Color.fromARGB(102, 210, 92, 210), // translucent neon magenta for previous move
-//           selected:
-//               Color(0xFFB1A6FC), // translucent hot pink for selected squares
-//           premove: Color(0x6600FFFF), // translucent bright cyan for premoves
-//         );
-        
-// }

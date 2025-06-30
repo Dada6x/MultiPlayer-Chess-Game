@@ -9,14 +9,13 @@ class GameMenuWidget extends StatelessWidget {
   final VoidCallback onPressed;
   final bool isSelected;
 
-  const GameMenuWidget({
-    super.key,
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.onPressed,
-    required this.isSelected,
-  });
+  const GameMenuWidget(
+      {super.key,
+      required this.title,
+      required this.subtitle,
+      required this.icon,
+      required this.onPressed,
+      required this.isSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +29,7 @@ class GameMenuWidget extends StatelessWidget {
       child: SizedBox(
         width: 190.w,
         child: Card(
-          elevation: 5,
+          elevation: 6,
           shape: ContinuousRectangleBorder(
               borderRadius: BorderRadius.circular(45.sp)),
           color: Colors.pink,

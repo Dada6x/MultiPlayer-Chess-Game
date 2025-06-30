@@ -7,12 +7,13 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 class MultiPlayerChessGame extends StatefulWidget {
   final String roomId;
-  final int playerColor; // Squares.white or Squares.black
-
+  final int playerColor;
+  final String my_name;
   const MultiPlayerChessGame({
     super.key,
     required this.roomId,
     required this.playerColor,
+    required this.my_name,
   });
 
   @override
@@ -24,6 +25,8 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
   late SquaresState state;
   bool isLoading = true;
   bool flipBoard = false;
+  String? opponentName;
+  bool waitingForOpponent = true;
 
   @override
   void initState() {
@@ -37,16 +40,25 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
     try {
       final data = await Supabase.instance.client
           .from('games')
-          .select('fen')
+          .select('fen, white_player, black_player')
           .eq('id', widget.roomId)
           .maybeSingle();
-
       if (data != null) {
         game = bishop.Game(
           fen: data['fen'],
           variant: bishop.Variant.standard(),
         );
         state = game.squaresState(widget.playerColor);
+
+        final possibleOpponent = widget.playerColor == Squares.white
+            ? data['black_player']
+            : data['white_player'];
+
+        if (possibleOpponent != null && possibleOpponent.isNotEmpty) {
+          opponentName = possibleOpponent;
+          waitingForOpponent = false;
+        }
+
         setState(() => isLoading = false);
       } else {
         throw Exception('Game not found.');
@@ -63,7 +75,8 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
         .eq('id', widget.roomId)
         .listen((event) {
           if (event.isNotEmpty) {
-            final newFen = event.first['fen'];
+            final data = event.first;
+            final newFen = data['fen'];
             if (newFen != game.fen) {
               print('[ Realtime] New FEN received: $newFen');
               game = bishop.Game(
@@ -77,12 +90,22 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
                 }
               });
             }
+
+            final possibleOpponent = widget.playerColor == Squares.white
+                ? data['black_player']
+                : data['white_player'];
+
+            if (possibleOpponent != null && possibleOpponent.isNotEmpty) {
+              setState(() {
+                opponentName = possibleOpponent;
+                waitingForOpponent = false;
+              });
+            }
           }
         });
   }
 
   Future<void> _onMove(Move move) async {
-    // Check turn correctly
     final isWhitesTurn = game.turn == 0;
     if ((isWhitesTurn && widget.playerColor == Squares.black) ||
         (!isWhitesTurn && widget.playerColor == Squares.white)) {
@@ -140,6 +163,15 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
           : Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                waitingForOpponent
+                    ? const Text("Waiting for opponent to join...")
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Text(opponentName!),
+                          const CircleAvatar(),
+                        ],
+                      ),
                 Text(
                   game.turn == bishop.Bishop.white
                       ? "White's Turn"
@@ -167,6 +199,14 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
                     ),
                     promotionBehaviour: PromotionBehaviour.autoPremove,
                   ),
+                ),
+                const SizedBox(height: 10),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    const CircleAvatar(),
+                    Text(widget.my_name),
+                  ],
                 ),
               ],
             ),
