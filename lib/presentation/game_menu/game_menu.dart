@@ -155,6 +155,7 @@ class _GameMenuState extends State<GameMenu> {
     );
   }
 }
+
 class ImageWidget extends StatelessWidget {
   final String imagePath;
   const ImageWidget({super.key, required this.imagePath});
@@ -163,10 +164,9 @@ class ImageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Image.asset(
       imagePath,
-      fit: BoxFit
-          .contain, 
-      width: double.infinity, 
-      height: double.infinity, 
+      fit: BoxFit.contain,
+      width: double.infinity,
+      height: double.infinity,
     );
   }
 }

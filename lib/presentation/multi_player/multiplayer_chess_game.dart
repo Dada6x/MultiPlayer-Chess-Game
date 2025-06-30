@@ -1,6 +1,8 @@
 import 'package:chess_game/main.dart';
+import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
 import 'package:bishop/bishop.dart' as bishop;
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:squares/squares.dart';
 import 'package:square_bishop/square_bishop.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -28,12 +30,24 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
   String? opponentName;
   bool waitingForOpponent = true;
 
+  late ConfettiController _confettiController;
+
   @override
   void initState() {
     super.initState();
     flipBoard = widget.playerColor == Squares.black;
+    _confettiController =
+        ConfettiController(duration: const Duration(seconds: 4));
     _loadGame();
     _subscribeToGame();
+    //11:00
+    // add 10 mins
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadGame() async {
@@ -106,6 +120,11 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
   }
 
   Future<void> _onMove(Move move) async {
+    if (waitingForOpponent) {
+      print('Opponent has not joined yet!');
+      return;
+    }
+
     final isWhitesTurn = game.turn == 0;
     if ((isWhitesTurn && widget.playerColor == Squares.black) ||
         (!isWhitesTurn && widget.playerColor == Squares.white)) {
@@ -127,11 +146,20 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
     }
   }
 
-  void _showGameResultDialog() {
+  void _showGameResultDialog() async {
     final result = game.result;
     if (result == null) return;
     debug.i(result.readable);
+    if ((widget.playerColor == Squares.white &&
+            result.readable == "White won by checkmate") ||
+        (widget.playerColor == Squares.black &&
+            result.readable == "Black won by checkmate")) {
+      _confettiController.play();
+    }
+
+    await Future.delayed(const Duration(seconds: 4));
     showDialog(
+      // ignore: use_build_context_synchronously
       context: context,
       builder: (_) => AlertDialog(
         title: const Text("Game Over"),
@@ -140,8 +168,9 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
           TextButton(
             onPressed: () {
               Navigator.pop(context);
+              // _startNewGame();
             },
-            child: const Text("New Game"),
+            child: const Text("New Game?"),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context),
@@ -182,9 +211,9 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
                     color: Colors.black,
                   ),
                 ),
-                const SizedBox(height: 10),
                 Padding(
-                  padding: const EdgeInsets.all(8.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 15.h),
                   child: BoardController(
                     state: state.board,
                     playState: state.state,
@@ -200,8 +229,6 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
                     promotionBehaviour: PromotionBehaviour.autoPremove,
                   ),
                 ),
-                const SizedBox(height: 10),
-                const SizedBox(height: 10),
                 Row(
                   children: [
                     const CircleAvatar(),

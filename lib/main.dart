@@ -8,7 +8,6 @@ import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:logger/logger.dart';
-import 'package:motion/motion.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -86,6 +85,9 @@ class App extends StatelessWidget {
 
 //!!!!!!!!!!!!!!!!!!!! make it with webSocket via that indian dude 
 // https://www.youtube.com/watch?v=Aut-wfXacXg
+//! see the Build From the Scratch UI from this dude 
+// https://www.youtube.com/watch?v=DM9E-Xz1mnU
+
 
 //! 
 // ! chess Logic
