@@ -29,6 +29,7 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
   bool flipBoard = false;
   String? opponentName;
   bool waitingForOpponent = true;
+  bool _hasShownDialog = false;
 
   late ConfettiController _confettiController;
 
@@ -40,8 +41,6 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
         ConfettiController(duration: const Duration(seconds: 4));
     _loadGame();
     _subscribeToGame();
-    //11:00
-    // add 10 mins
   }
 
   @override
@@ -88,35 +87,42 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
         .stream(primaryKey: ['id'])
         .eq('id', widget.roomId)
         .listen((event) {
-          if (event.isNotEmpty) {
-            final data = event.first;
-            final newFen = data['fen'];
-            if (newFen != game.fen) {
-              print('[ Realtime] New FEN received: $newFen');
-              game = bishop.Game(
-                fen: newFen,
-                variant: bishop.Variant.standard(),
-              );
-              setState(() {
-                state = game.squaresState(widget.playerColor);
-                if (game.result != null) {
-                  _showGameResultDialog();
-                }
-              });
-            }
+      if (event.isNotEmpty) {
+        final data = event.first;
+        final newFen = data['fen'];
 
-            final possibleOpponent = widget.playerColor == Squares.white
-                ? data['black_player']
-                : data['white_player'];
-
-            if (possibleOpponent != null && possibleOpponent.isNotEmpty) {
-              setState(() {
-                opponentName = possibleOpponent;
-                waitingForOpponent = false;
-              });
-            }
-          }
+        game = bishop.Game(fen: newFen, variant: bishop.Variant.standard());
+        setState(() {
+          state = game.squaresState(widget.playerColor);
         });
+
+        final result = game.result;
+        if (result != null && !_hasShownDialog) {
+          _hasShownDialog = true;
+          final isWinner = (widget.playerColor == Squares.white &&
+                  result.readable.contains("White won")) ||
+              (widget.playerColor == Squares.black &&
+                  result.readable.contains("Black won"));
+
+          if (isWinner) _confettiController.play();
+
+          Future.delayed(Duration(seconds: isWinner ? 4 : 0), () {
+            _showGameResultDialog(result.readable);
+          });
+        }
+
+        final possibleOpponent = widget.playerColor == Squares.white
+            ? data['black_player']
+            : data['white_player'];
+
+        if (possibleOpponent != null && possibleOpponent.isNotEmpty) {
+          setState(() {
+            opponentName = possibleOpponent;
+            waitingForOpponent = false;
+          });
+        }
+      }
+    });
   }
 
   Future<void> _onMove(Move move) async {
@@ -146,32 +152,13 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
     }
   }
 
-  void _showGameResultDialog() async {
-    final result = game.result;
-    if (result == null) return;
-    debug.i(result.readable);
-    if ((widget.playerColor == Squares.white &&
-            result.readable == "White won by checkmate") ||
-        (widget.playerColor == Squares.black &&
-            result.readable == "Black won by checkmate")) {
-      _confettiController.play();
-    }
-
-    await Future.delayed(const Duration(seconds: 4));
+  void _showGameResultDialog(String resultText) {
     showDialog(
-      // ignore: use_build_context_synchronously
       context: context,
       builder: (_) => AlertDialog(
         title: const Text("Game Over"),
-        content: Text(result.readable),
+        content: Text(resultText),
         actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              // _startNewGame();
-            },
-            child: const Text("New Game?"),
-          ),
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text("Close"),
