@@ -17,6 +17,9 @@ import 'package:chess_game/core/constants/colors.dart';
 import 'package:chess_game/core/constants/utils/themeSwitchButton.dart';
 import 'package:chess_game/main.dart';
 
+import '../../core/constants/utils/pages/board_theme_custom.dart';
+import '../../core/constants/utils/piece_set_custom.dart';
+
 class MultiPlayerChessGame extends StatefulWidget {
   final String roomId;
   final int playerColor;
@@ -331,7 +334,7 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
                             ),
                           ),
                         ),
-                        //!the Game 
+                        //!the Game
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           child: Card(
@@ -347,8 +350,8 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
                                       const LabelConfig(showLabels: false),
                                   state: state.board,
                                   playState: state.state,
-                                  pieceSet: PieceSet.fine(),
-                                  theme: BoardTheme.fine.copyWith(
+                                  pieceSet: PieceSetCustom.fine(),
+                                  theme: BoardThemeCustom.fine.copyWith(
                                     lightSquare: Theme.of(context)
                                         .scaffoldBackgroundColor
                                         .withOpacity(0.3),

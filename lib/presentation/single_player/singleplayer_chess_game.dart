@@ -1,4 +1,5 @@
 import 'package:bishop/bishop.dart' as bishop;
+import 'package:chess_game/core/constants/utils/piece_set_custom.dart';
 import 'package:chess_game/core/constants/utils/themeSwitchButton.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,8 @@ import 'package:iconify_flutter_plus/icons/mdi.dart';
 import 'package:square_bishop/square_bishop.dart';
 import 'package:squares/squares.dart';
 import 'package:chess_game/core/constants/colors.dart';
+
+import '../../core/constants/utils/pages/board_theme_custom.dart';
 
 class SinglePlayerChessGame extends StatefulWidget {
   const SinglePlayerChessGame({super.key});
@@ -190,8 +193,8 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
                             animatePieces: true,
                             state: state.board,
                             playState: state.state,
-                            pieceSet: PieceSet.fine(),
-                            theme: BoardTheme.fine.copyWith(
+                            pieceSet: PieceSetCustom.fine(),
+                            theme: BoardThemeCustom.fine.copyWith(
                               lightSquare: Theme.of(context)
                                   .scaffoldBackgroundColor
                                   .withOpacity(0.3),
