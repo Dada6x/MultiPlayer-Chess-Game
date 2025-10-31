@@ -5,7 +5,8 @@ import 'package:get/get.dart';
 import 'package:squares/squares.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:chess_game/core/constants/colors.dart'; 
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:chess_game/core/constants/colors.dart';
 
 class JoinGame extends StatefulWidget {
   const JoinGame({super.key});
@@ -18,6 +19,28 @@ class _JoinGameState extends State<JoinGame> {
   final _controller = TextEditingController();
   bool _loading = false;
   String? _error;
+  String? _playerName;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadPlayerName();
+  }
+
+  Future<void> _loadPlayerName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString('player_name');
+
+    if (name == null || name.isEmpty) {
+      // Redirect to Profile page if name not set
+      Get.offNamed('/profile'); // Replace with your Profile page route
+      return;
+    }
+
+    setState(() {
+      _playerName = name;
+    });
+  }
 
   Future<bool> _checkRoomExists(String roomId) async {
     try {
@@ -35,8 +58,17 @@ class _JoinGameState extends State<JoinGame> {
   }
 
   void _onSubmit() async {
-    final roomId = _controller.text.trim();
+    if (_playerName == null || _playerName!.isEmpty) {
+      Get.snackbar(
+        'Name Required',
+        'Please set your name in your profile first.',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+      return;
+    }
 
+    final roomId = _controller.text.trim();
     if (roomId.isEmpty) {
       setState(() => _error = 'Please enter a Room ID');
       return;
@@ -54,10 +86,10 @@ class _JoinGameState extends State<JoinGame> {
     if (exists) {
       await Supabase.instance.client
           .from('games')
-          .update({'black_player': 'yahea_join'}).eq('id', roomId);
+          .update({'black_player': _playerName}).eq('id', roomId);
 
       Get.to(() => MultiPlayerChessGame(
-            my_name: "yahea_join",
+            my_name: _playerName!,
             roomId: roomId,
             playerColor: Squares.black,
           ));
@@ -89,7 +121,6 @@ class _JoinGameState extends State<JoinGame> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Card Container
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
@@ -105,10 +136,10 @@ class _JoinGameState extends State<JoinGame> {
                 ),
                 child: Column(
                   children: [
-                     Text(
+                    Text(
                       "Enter the Room ID your friend gave you:",
                       style: TextStyle(
-                        color:Theme.of(context).colorScheme.tertiary,
+                        color: Theme.of(context).colorScheme.tertiary,
                         fontSize: 18,
                       ),
                       textAlign: TextAlign.center,
@@ -119,16 +150,22 @@ class _JoinGameState extends State<JoinGame> {
                       onSubmitted: (_) => _onSubmit(),
                       decoration: InputDecoration(
                         hintText: "e.g. a1b2c3d4",
-                        hintStyle:  TextStyle(color: Theme.of(context).colorScheme.tertiary.withOpacity(0.5)),
+                        hintStyle: TextStyle(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .tertiary
+                                .withOpacity(0.5)),
                         filled: true,
-                        fillColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.3),
+                        fillColor:
+                            Theme.of(context).scaffoldBackgroundColor.withOpacity(0.3),
                         errorText: _error,
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12),
                           borderSide: BorderSide.none,
                         ),
                       ),
-                      style:  TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                      style:
+                          TextStyle(color: Theme.of(context).colorScheme.tertiary),
                     ),
                     const SizedBox(height: 24),
                     SizedBox(
@@ -143,10 +180,8 @@ class _JoinGameState extends State<JoinGame> {
                           ),
                         ),
                         child: _loading
-                            ? const CircularProgressIndicator(
-                                color: accentAmber,
-                              )
-                            :  Text(
+                            ? const CircularProgressIndicator(color: accentAmber)
+                            : Text(
                                 "Join Game",
                                 style: TextStyle(
                                     color: Theme.of(context).colorScheme.tertiary,
@@ -191,11 +226,12 @@ class _JoinGameState extends State<JoinGame> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        icon: const Icon(Icons.qr_code, color: accentAmber  ),
-                        label:  Text(
+                        icon: const Icon(Icons.qr_code, color: accentAmber),
+                        label: Text(
                           "Scan QR Code",
                           style: TextStyle(
-                              color: Theme.of(context).colorScheme.tertiary, fontWeight: FontWeight.bold),
+                              color: Theme.of(context).colorScheme.tertiary,
+                              fontWeight: FontWeight.bold),
                         ),
                       ),
                     ),

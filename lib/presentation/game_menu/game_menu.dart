@@ -11,10 +11,9 @@ import 'package:iconify_flutter_plus/icons/mdi.dart';
 import 'package:iconify_flutter_plus/icons/mi.dart';
 import 'package:iconify_flutter_plus/icons/whh.dart';
 import 'package:chess_game/core/constants/colors.dart';
-import 'package:chess_game/core/constants/utils/textStyles.dart';
 import 'package:chess_game/presentation/game_menu/widgets/game_menu_widget.dart';
 import 'package:chess_game/presentation/multi_player/boarding.dart';
-import 'package:chess_game/presentation/options/options.dart';
+import 'package:chess_game/presentation/options/Profile.dart';
 import 'package:chess_game/presentation/single_player/singleplayer_chess_game.dart';
 
 class GameMenu extends StatefulWidget {
@@ -162,7 +161,7 @@ class _GameMenuState extends State<GameMenu> {
                       color: Theme.of(context).cardColor,
                     );
                     onPressed = () {
-                      Get.to(const Options());
+                      Get.to(const ProfilePage());
                     };
                   }
                   return AnimatedScale(

@@ -1,4 +1,5 @@
 import 'package:bishop/bishop.dart' as bishop;
+import 'package:chess_game/presentation/options/Profile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -9,9 +10,9 @@ import 'package:share_plus/share_plus.dart';
 import 'package:squares/squares.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:uuid/uuid.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:chess_game/core/constants/colors.dart';
 import 'package:chess_game/core/constants/utils/themeSwitchButton.dart';
-import 'package:chess_game/main.dart';
 import 'package:chess_game/presentation/multi_player/multiplayer_chess_game.dart';
 
 class CreatingGame extends StatefulWidget {
@@ -25,14 +26,34 @@ class _CreatingGameState extends State<CreatingGame> {
   String? _roomId;
   bool _loading = true;
   String? _error;
+  String? _playerName;
 
   @override
   void initState() {
     super.initState();
+    _loadPlayerName();
+  }
+
+  Future<void> _loadPlayerName() async {
+    final prefs = await SharedPreferences.getInstance();
+    final name = prefs.getString('player_name');
+
+    if (name == null || name.isEmpty) {
+      // Redirect to Profile page if name is not set
+      Get.off(() => const ProfilePage());
+      return;
+    }
+
+    setState(() {
+      _playerName = name;
+    });
+
     _createRoom();
   }
 
   Future<void> _createRoom() async {
+    if (_playerName == null || _playerName!.isEmpty) return;
+
     try {
       const uuid = Uuid();
       final roomId = uuid.v4().substring(0, 8);
@@ -40,7 +61,7 @@ class _CreatingGameState extends State<CreatingGame> {
       final newGame = bishop.Game(variant: bishop.Variant.standard());
 
       await Supabase.instance.client.from('games').insert(
-          {'id': roomId, 'fen': newGame.fen, 'white_player': "Yahea_Create"});
+          {'id': roomId, 'fen': newGame.fen, 'white_player': _playerName});
 
       setState(() {
         _roomId = roomId;
@@ -49,19 +70,25 @@ class _CreatingGameState extends State<CreatingGame> {
     } catch (e) {
       setState(() {
         _error = e.toString();
-        debug.i(_error);
         _loading = false;
       });
     }
   }
 
   void _startGame() {
-    if (_roomId != null) {
+    if (_roomId != null && _playerName != null && _playerName!.isNotEmpty) {
       Get.to(() => MultiPlayerChessGame(
-            my_name: "Yahea_Create",
+            my_name: _playerName!,
             roomId: _roomId!,
             playerColor: Squares.white,
           ));
+    } else {
+      Get.snackbar(
+        'Name Required',
+        'Please set your name in your profile first.',
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
     }
   }
 
@@ -73,7 +100,7 @@ class _CreatingGameState extends State<CreatingGame> {
         actions: const [ThemeSwitchButton()],
         leading: BackButton(color: Theme.of(context).colorScheme.tertiary),
         title: Text(
-          "Creating an Room ",
+          "Creating a Room",
           style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
         ),
         backgroundColor: Theme.of(context).cardColor,
@@ -82,9 +109,7 @@ class _CreatingGameState extends State<CreatingGame> {
       ),
       body: Center(
         child: _loading
-            ? const CircularProgressIndicator(
-                color: accentAmber,
-              )
+            ? const CircularProgressIndicator(color: accentAmber)
             : _error != null
                 ? Text(
                     "Error: $_error",
@@ -126,7 +151,7 @@ class _CreatingGameState extends State<CreatingGame> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SelectableText(
-                                  _roomId!,
+                                  _roomId ?? '',
                                   style: TextStyle(
                                     fontSize: 26.sp,
                                     fontWeight: FontWeight.bold,
@@ -136,9 +161,11 @@ class _CreatingGameState extends State<CreatingGame> {
                                 SizedBox(width: 10.w),
                                 IconButton(
                                   onPressed: () async {
-                                    String shareText =
-                                        'Join Me in this Game! Room Code: $_roomId';
-                                    await Share.share(shareText);
+                                    if (_roomId != null) {
+                                      String shareText =
+                                          'Join Me in this Game! Room Code: $_roomId';
+                                      await Share.share(shareText);
+                                    }
                                   },
                                   icon: Iconify(
                                     Ci.copy,
@@ -149,23 +176,24 @@ class _CreatingGameState extends State<CreatingGame> {
                               ],
                             ),
                             SizedBox(height: 20.h),
-                            Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(15.r),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Colors.black26,
-                                    blurRadius: 8,
-                                    offset: Offset(0, 4),
-                                  ),
-                                ],
+                            if (_roomId != null)
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(15.r),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Colors.black26,
+                                      blurRadius: 8,
+                                      offset: Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
+                                child: QrImageView(
+                                  data: _roomId!,
+                                  size: 170,
+                                ),
                               ),
-                              child: QrImageView(
-                                data: _roomId!,
-                                size: 170,
-                              ),
-                            ),
                             SizedBox(height: 25.h),
                             SizedBox(
                               width: double.infinity,
