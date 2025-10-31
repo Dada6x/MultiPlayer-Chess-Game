@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:chess_game/core/app/theme/themes.dart';
 import 'package:chess_game/core/constants/utils/rawSnackBar.dart';
 
 import 'package:flutter/material.dart';
@@ -8,10 +9,15 @@ import 'package:internet_connection_checker_plus/internet_connection_checker_plu
 //! this controller manage three things theme , language , and internet connection
 class AppController extends GetxController {
   RxBool isDarkMode = false.obs;
-  RxBool isArabic = true.obs;
   RxBool isOffline = true.obs;
 
   late BuildContext context;
+
+  // toggle theme
+  void toggleTheme() {
+    isDarkMode.value = !isDarkMode.value;
+    Get.changeTheme(isDarkMode.value ? Themes().darkMode : Themes().lightMode);
+  }
 
   // change language
   void changeLang(String codeLang) {

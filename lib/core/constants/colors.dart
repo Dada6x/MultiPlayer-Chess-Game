@@ -1,26 +1,34 @@
 import 'package:flutter/material.dart';
 
-// primary colors!
-const blue = Color(0xFF0061FF);
-const red = Color(0xFFF75555);
-// const pink = Colors(0xFFFF4080);
-const green = Color(0xFF4CD964);
-const orange = Colors.orange;
-const white = Colors.white;
-const black = Colors.black;
-const grey = Color(0xFF666876);
-// theming colors !
-//? lightSide
-const lightBorder = Color(0xFFD0DDF0);
-const lightSecondary = Color(0xFFF2F7FF);
-// var lightBackground = Colors.grey.shade100;
-//! DarkSide
-const darkBorder = Color(0xFF0F1A2D);
-const darkSecondary = Color(0xFF0D1116);
-const darkBackground = Color(0xFF0D0D0D);
+// Primary Colors
+const Color primaryBlue = Color(0xFF0072FF); // Deep blue
+const Color secondaryCyan = Color(0xFF00C6FF); // Cyan accent
+const Color accentAmber = Color(0xFFB0A5EA); // Amber for highlights
+const Color errorRed = Color(0xFFFF4C4C);
+const Color green = Color(0xFF4CD964);
+// 
 
-// other
-const shimmerContainer = Color.fromARGB(255, 72, 71, 71);
-const lightshimerContainer = Color.fromARGB(255, 231, 232, 238);
 
-const purple = Color(0xFF8A56F9);
+// Backgrounds
+const Color lightBackground = Color.fromARGB(255, 215, 216, 218);
+const Color darkBackground = Color(0xFF1B1B2F);
+
+// Cards / Surfaces
+const Color lightCard = Colors.white;
+const Color darkCard = Color(0xFF2C2C4A);
+
+// Text
+const Color textLight = Colors.black87;
+const Color textDark = Colors.white70;
+
+// Borders / Outline
+const Color lightBorder = Colors.grey;
+const Color darkBorder = Colors.grey;
+
+// Shimmer / Placeholder
+const Color shimmerLight = Color(0xFFE0E0E0);
+const Color shimmerDark = Color(0xFF3A3A5C);
+
+// Other accents
+const Color grey = Colors.grey;
+const Color white = Colors.white;

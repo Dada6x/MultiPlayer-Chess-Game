@@ -1,9 +1,13 @@
 import 'package:bishop/bishop.dart' as bishop;
+import 'package:chess_game/core/constants/utils/themeSwitchButton.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:iconify_flutter_plus/iconify_flutter_plus.dart';
+import 'package:iconify_flutter_plus/icons/mdi.dart';
 import 'package:square_bishop/square_bishop.dart';
 import 'package:squares/squares.dart';
-import 'package:chess_game/main.dart';
+import 'package:chess_game/core/constants/colors.dart';
 
 class SinglePlayerChessGame extends StatefulWidget {
   const SinglePlayerChessGame({super.key});
@@ -22,7 +26,6 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
   @override
   void initState() {
     super.initState();
-
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 4));
     _startNewGame();
@@ -45,9 +48,7 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
 
     final moved = game.makeSquaresMove(move);
     if (moved) {
-      setState(() {
-        state = game.squaresState(Squares.white);
-      });
+      setState(() => state = game.squaresState(Squares.white));
 
       if (game.result != null) {
         _showGameResultDialog();
@@ -62,6 +63,7 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
           state = game.squaresState(Squares.white);
           aiThinking = false;
         });
+
         if (game.result != null) {
           _showGameResultDialog();
         }
@@ -73,36 +75,47 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
     if (game.history.length >= 2) {
       game.undo();
       game.undo();
-      setState(() {
-        state = game.squaresState(Squares.white);
-      });
+      setState(() => state = game.squaresState(Squares.white));
     }
   }
 
   void _showGameResultDialog() {
     final result = game.result;
     if (result == null) return;
-    debug.i(result.readable);
-    if (result.readable == "White won by checkmate") {
+
+    if (result.readable.contains("White won")) {
       _confettiController.play();
     }
-    const Duration(seconds: 4);
+
     showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: const Text("Game Over"),
-        content: Text(result.readable),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: const Text(
+          "Game Over",
+          style: TextStyle(color: Colors.white),
+        ),
+        content: Text(
+          result.readable,
+          style: const TextStyle(color: Colors.white70),
+        ),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.pop(context);
               _startNewGame();
             },
-            child: const Text("New Game"),
+            child: const Text(
+              "New Game",
+              style: TextStyle(color: accentAmber),
+            ),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: const Text("Close"),
+            child: const Text(
+              "Close",
+              style: TextStyle(color: Colors.white),
+            ),
           ),
         ],
       ),
@@ -112,55 +125,141 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: const Text("Single Player"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _startNewGame,
-          ),
-          IconButton(
-            icon: const Icon(Icons.undo),
-            onPressed: _undoMove,
-          ),
-        ],
+        actions: const [ThemeSwitchButton()],
+        leading: BackButton(
+          color: Theme.of(context).colorScheme.tertiary,
+        ),
+        centerTitle: true,
+        title: Text(
+          "You vs AI",
+          style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+        ),
+        backgroundColor: Theme.of(context).cardColor,
+        elevation: 0,
+        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const SizedBox(height: 4),
-            Stack(
-              alignment: Alignment.topCenter,
-              children: [
-                RepaintBoundary(
-                  child: BoardController(
-                    animatePieces: true,
-                    state: state.board,
-                    playState: state.state,
-                    pieceSet: PieceSet.fine(),
-                    theme: BoardTheme.fine,
-                    moves: state.moves,
-                    onMove: _onMove,
-                    onPremove: _onMove,
-                    markerTheme: MarkerTheme(
-                      empty: MarkerTheme.dot,
-                      piece: MarkerTheme.corners(),
-                    ),
-                    promotionBehaviour: PromotionBehaviour.autoPremove,
+      body: SafeArea(
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h),
+          child: Column(
+            children: [
+              SizedBox(height: 20.h),
+              Card(
+                color: Theme.of(context).cardColor,
+                elevation: 10,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        "ChatGPT",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.tertiary,
+                            fontSize: 16),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      CircleAvatar(
+                        child: Iconify(
+                          Mdi.robot,
+                          size: 28,
+                          color: Theme.of(context).colorScheme.tertiary,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                ConfettiWidget(
-                  confettiController: _confettiController,
-                  blastDirectionality: BlastDirectionality.explosive,
-                  shouldLoop: false,
-                  numberOfParticles: 50,
-                  colors: Colors.primaries,
+              ),
+              Center(
+                child: Card(
+                  color: Theme.of(context).cardColor,
+                  elevation: 10,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.r)),
+                  child: Padding(
+                    padding: EdgeInsets.all(12.w),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        RepaintBoundary(
+                          child: BoardController(
+                            animatePieces: true,
+                            state: state.board,
+                            playState: state.state,
+                            pieceSet: PieceSet.fine(),
+                            theme: BoardTheme.fine.copyWith(
+                              lightSquare: Theme.of(context)
+                                  .scaffoldBackgroundColor
+                                  .withOpacity(0.3),
+                              darkSquare: Theme.of(context)
+                                  .scaffoldBackgroundColor
+                                  .withOpacity(0.6),
+                            ),
+                            moves: state.moves,
+                            onMove: _onMove,
+                            onPremove: _onMove,
+                            markerTheme: MarkerTheme(
+                              empty: MarkerTheme.dot,
+                              piece: MarkerTheme.corners(),
+                            ),
+                            promotionBehaviour: PromotionBehaviour.autoPremove,
+                          ),
+                        ),
+                        ConfettiWidget(
+                          confettiController: _confettiController,
+                          blastDirectionality: BlastDirectionality.explosive,
+                          shouldLoop: false,
+                          numberOfParticles: 50,
+                          colors: const [
+                            Colors.green,
+                            Colors.blue,
+                            Colors.orange,
+                            Colors.purple,
+                            Colors.yellow,
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 4),
-          ],
+              ),
+              SizedBox(height: 20.h),
+              Text(
+                aiThinking ? "AI is thinking..." : "Your turn",
+                style: TextStyle(
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.w500,
+                  color: Theme.of(context).colorScheme.tertiary,
+                ),
+              ),
+              SizedBox(height: 12.h),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  FloatingActionButton.small(
+                    heroTag: "undo",
+                    tooltip: "Undo Move",
+                    onPressed: _undoMove,
+                    backgroundColor: Theme.of(context).cardColor,
+                    child: const Icon(Icons.undo, color: accentAmber),
+                  ),
+                  SizedBox(width: 16.w),
+                  FloatingActionButton.small(
+                    heroTag: "restart",
+                    tooltip: "New Game",
+                    onPressed: _startNewGame,
+                    backgroundColor: Theme.of(context).cardColor,
+                    child: const Icon(Icons.refresh, color: accentAmber),
+                  ),
+                ],
+              ),
+              SizedBox(height: 40.h),
+            ],
+          ),
         ),
       ),
     );

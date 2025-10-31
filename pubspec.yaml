@@ -41,21 +41,16 @@ dependencies:
   flutter_screenutil: ^5.9.3
   internet_connection_checker_plus: ^2.6.0
   shared_preferences: ^2.3.3
-  glassmorphism: ^3.0.0
   flutter_svg: ^2.0.17
-  neon: ^0.1.0
-  motion: ^2.0.1
   confetti: ^0.8.0 
-  squares: ^1.2.1
-  lottie: any
   share_plus: any
-  bounce: ^1.0.2
-  skeletonizer: ^1.4.3
+  fancy_shimmer_image: ^2.0.3
   card_swiper: ^3.0.1
   get: ^4.7.2
   uuid: ^3.0.7
   animations: ^2.0.0
   bishop: ^1.4.4
+  squares: ^1.2.1
   square_bishop: ^0.3.0
   supabase_flutter: ^2.9.1
   qr_flutter: ^4.1.0
@@ -89,6 +84,8 @@ flutter:
     - assets/icons/
     - assets/images/
     - assets/fine/
+    - assets/
+    
 
   #   - images/a_dot_ham.jpeg
 

@@ -1,11 +1,21 @@
-import 'package:chess_game/main.dart';
+import 'package:bishop/bishop.dart' as bishop;
+import 'package:chess_game/core/constants/utils/QrScanner.dart';
+import 'package:chess_game/presentation/game_menu/game_menu.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:bishop/bishop.dart' as bishop;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:squares/squares.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:iconify_flutter_plus/iconify_flutter_plus.dart';
+import 'package:iconify_flutter_plus/icons/bi.dart';
+import 'package:iconify_flutter_plus/icons/ci.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:square_bishop/square_bishop.dart';
+import 'package:squares/squares.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:chess_game/core/constants/colors.dart';
+import 'package:chess_game/core/constants/utils/themeSwitchButton.dart';
+import 'package:chess_game/main.dart';
 
 class MultiPlayerChessGame extends StatefulWidget {
   final String roomId;
@@ -29,9 +39,10 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
   bool flipBoard = false;
   String? opponentName;
   bool waitingForOpponent = true;
-  bool _hasShownDialog = false;
 
   late ConfettiController _confettiController;
+
+  bool _resultDialogShown = false;
 
   @override
   void initState() {
@@ -39,6 +50,7 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
     flipBoard = widget.playerColor == Squares.black;
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 4));
+    debug.i("💡 initState: Starting to load game and subscribe");
     _loadGame();
     _subscribeToGame();
   }
@@ -57,6 +69,7 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
           .eq('id', widget.roomId)
           .maybeSingle();
       if (data != null) {
+        debug.i("💡 _loadGame: Loaded game data");
         game = bishop.Game(
           fen: data['fen'],
           variant: bishop.Variant.standard(),
@@ -72,12 +85,16 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
           waitingForOpponent = false;
         }
 
-        setState(() => isLoading = false);
+        setState(() {
+          isLoading = false;
+          debug.i(
+              "💡 build: Building UI, isLoading: $isLoading, waitingForOpponent: $waitingForOpponent");
+        });
       } else {
         throw Exception('Game not found.');
       }
     } catch (e) {
-      print('Error loading game: $e');
+      debug.i("❌ Error loading game: $e");
     }
   }
 
@@ -87,54 +104,58 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
         .stream(primaryKey: ['id'])
         .eq('id', widget.roomId)
         .listen((event) {
-      if (event.isNotEmpty) {
-        final data = event.first;
-        final newFen = data['fen'];
+          if (event.isNotEmpty) {
+            final data = event.first;
+            final newFen = data['fen'];
 
-        game = bishop.Game(fen: newFen, variant: bishop.Variant.standard());
-        setState(() {
-          state = game.squaresState(widget.playerColor);
+            if (newFen != game.fen) {
+              debug.i('[ Realtime] New FEN received: $newFen');
+              game = bishop.Game(
+                fen: newFen,
+                variant: bishop.Variant.standard(),
+              );
+              state = game.squaresState(widget.playerColor);
+              setState(() {});
+            } else {
+              game = bishop.Game(
+                fen: newFen,
+                variant: bishop.Variant.standard(),
+              );
+              state = game.squaresState(widget.playerColor);
+              setState(() {});
+            }
+
+            if (!_resultDialogShown && game.result != null) {
+              _resultDialogShown = true;
+              _showGameResultDialog();
+            }
+
+            final possibleOpponent = widget.playerColor == Squares.white
+                ? data['black_player']
+                : data['white_player'];
+
+            if (possibleOpponent != null &&
+                possibleOpponent.isNotEmpty &&
+                waitingForOpponent) {
+              setState(() {
+                opponentName = possibleOpponent;
+                waitingForOpponent = false;
+              });
+            }
+          }
         });
-
-        final result = game.result;
-        if (result != null && !_hasShownDialog) {
-          _hasShownDialog = true;
-          final isWinner = (widget.playerColor == Squares.white &&
-                  result.readable.contains("White won")) ||
-              (widget.playerColor == Squares.black &&
-                  result.readable.contains("Black won"));
-
-          if (isWinner) _confettiController.play();
-
-          Future.delayed(Duration(seconds: isWinner ? 4 : 0), () {
-            _showGameResultDialog(result.readable);
-          });
-        }
-
-        final possibleOpponent = widget.playerColor == Squares.white
-            ? data['black_player']
-            : data['white_player'];
-
-        if (possibleOpponent != null && possibleOpponent.isNotEmpty) {
-          setState(() {
-            opponentName = possibleOpponent;
-            waitingForOpponent = false;
-          });
-        }
-      }
-    });
   }
 
   Future<void> _onMove(Move move) async {
     if (waitingForOpponent) {
-      print('Opponent has not joined yet!');
+      debug.i(' Opponent has not joined yet!');
       return;
     }
 
     final isWhitesTurn = game.turn == 0;
     if ((isWhitesTurn && widget.playerColor == Squares.black) ||
         (!isWhitesTurn && widget.playerColor == Squares.white)) {
-      print("It's not your turn!");
+      debug.i(" It's not your turn!");
       return;
     }
 
@@ -146,84 +167,395 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
         await Supabase.instance.client
             .from('games')
             .update({'fen': game.fen}).eq('id', widget.roomId);
+        debug.i("💡 _onMove: FEN updated successfully");
       } catch (e) {
-        print('❌ Error updating move: $e');
+        debug.i(' Error updating move: $e');
       }
     }
   }
 
-  void _showGameResultDialog(String resultText) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text("Game Over"),
-        content: Text(resultText),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text("Close"),
-          ),
-        ],
-      ),
-    );
+  void _showGameResultDialog() async {
+    final result = game.result;
+    if (result == null) return;
+    debug.i("💡 Game Result: ${result.readable}");
+
+    final playerWon = (widget.playerColor == Squares.white &&
+            result.readable.contains("White won")) ||
+        (widget.playerColor == Squares.black &&
+            result.readable.contains("Black won"));
+
+    if (playerWon) {
+      _confettiController.play();
+      debug.i(" Confetti started for winning player");
+    }
+
+    await Future.delayed(const Duration(seconds: 4));
+
+    if (mounted) {
+      showDialog(
+        context: context,
+        builder: (_) => AlertDialog(
+          title: const Text("Game Over"),
+          content: Text(result.readable),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text("New Game?"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Close"),
+            ),
+          ],
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        title: Text('Room: ${widget.roomId}'),
+        actions: const [
+          ThemeSwitchButton(),
+        ],
+        leading: BackButton(
+          color: Theme.of(context).colorScheme.tertiary,
+        ),
+        title: Center(
+          child: Row(
+            children: [
+              Text(
+                widget.roomId,
+                style: const TextStyle(color: accentAmber),
+              ),
+              IconButton(
+                onPressed: () async {
+                  String shareText =
+                      'Join Me in this Game! Room Code: ${widget.roomId}';
+                  await Share.share(shareText);
+                },
+                icon: Iconify(
+                  Ci.copy,
+                  size: 28.sp,
+                  color: Colors.grey[350],
+                ),
+              ),
+              QrIconButton(
+                roomId: widget.roomId,
+              )
+            ],
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).cardColor,
+        elevation: 0,
+        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
       ),
       body: isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                waitingForOpponent
-                    ? const Text("Waiting for opponent to join...")
-                    : Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Text(opponentName!),
-                          const CircleAvatar(),
-                        ],
-                      ),
-                Text(
-                  game.turn == bishop.Bishop.white
-                      ? "White's Turn"
-                      : "Black's Turn",
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
-                Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 12.w, vertical: 15.h),
-                  child: BoardController(
-                    state: state.board,
-                    playState: state.state,
-                    pieceSet: PieceSet.merida(),
-                    theme: BoardTheme.pink,
-                    moves: state.moves,
-                    onMove: _onMove,
-                    onPremove: _onMove,
-                    markerTheme: MarkerTheme(
-                      empty: MarkerTheme.dot,
-                      piece: MarkerTheme.corners(),
-                    ),
-                    promotionBehaviour: PromotionBehaviour.autoPremove,
-                  ),
-                ),
-                Row(
+          ? const Center(
+              child: CircularProgressIndicator(
+              color: accentAmber,
+            ))
+          : SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Stack(
                   children: [
-                    const CircleAvatar(),
-                    Text(widget.my_name),
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        //! who's Turn
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Card(
+                          color: Theme.of(context).cardColor,
+                          elevation: 5,
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Text(
+                              game.turn == bishop.Bishop.white
+                                  ? "White's Turn"
+                                  : "Black's Turn",
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.tertiary,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        //! the opponent Name
+                        Card(
+                          color: Theme.of(context).cardColor,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                waitingForOpponent
+                                    ? Text(
+                                        "Waiting for opponent to join...",
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .tertiary,
+                                            fontSize: 15),
+                                      )
+                                    : Text(
+                                        opponentName ?? '',
+                                        style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .tertiary,
+                                            fontSize: 16),
+                                      ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                CircleAvatar(
+                                  child: Iconify(
+                                    Bi.person_circle,
+                                    size: 40,
+                                    color: Colors.grey[200],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        //!the Game 
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 12),
+                          child: Card(
+                            color: Theme.of(context).cardColor,
+                            elevation: 10,
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 12.w, vertical: 15.h),
+                              child: RepaintBoundary(
+                                child: BoardController(
+                                  animatePieces: true,
+                                  labelConfig:
+                                      const LabelConfig(showLabels: false),
+                                  state: state.board,
+                                  playState: state.state,
+                                  pieceSet: PieceSet.fine(),
+                                  theme: BoardTheme.fine.copyWith(
+                                    lightSquare: Theme.of(context)
+                                        .scaffoldBackgroundColor
+                                        .withOpacity(0.3),
+                                    darkSquare: Theme.of(context)
+                                        .scaffoldBackgroundColor
+                                        .withOpacity(0.6),
+                                  ),
+                                  moves: state.moves,
+                                  onMove: _onMove,
+                                  onPremove: _onMove,
+                                  markerTheme: MarkerTheme(
+                                    empty: MarkerTheme.dot,
+                                    piece: MarkerTheme.corners(),
+                                  ),
+                                  promotionBehaviour:
+                                      PromotionBehaviour.autoPremove,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+
+                        //! the player Name
+                        Card(
+                          color: Theme.of(context).cardColor,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              children: [
+                                CircleAvatar(
+                                  child: Iconify(
+                                    Bi.person_circle,
+                                    size: 40,
+                                    color: Colors.grey[200],
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 10,
+                                ),
+                                Text(
+                                  widget.my_name,
+                                  style: TextStyle(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .tertiary,
+                                      fontSize: 16),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        Card(
+                          color: Theme.of(context).cardColor,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 8),
+                            child: Wrap(
+                              alignment: WrapAlignment.center,
+                              spacing: 10,
+                              runSpacing: 10,
+                              children: [
+                                ElevatedButton.icon(
+                                  onPressed: () {
+                                    showSurrenderDialog(context, () {
+                                      // Close the dialog (using rootNavigator)
+                                      Navigator.of(context, rootNavigator: true)
+                                          .pop();
+                                      // Navigate to GameMenu
+                                      Get.offAll(() => const GameMenu());
+                                    });
+                                  },
+                                  icon: const Icon(Icons.flag),
+                                  label: const Text("Surrender"),
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.redAccent,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                ),
+                                ElevatedButton.icon(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        Theme.of(context).colorScheme.primary,
+                                    foregroundColor: Colors.white,
+                                  ),
+                                  onPressed: () {},
+                                  icon: const Icon(Icons.replay),
+                                  label: const Text("Rematch"),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: ConfettiWidget(
+                        confettiController: _confettiController,
+                        blastDirectionality: BlastDirectionality.explosive,
+                        shouldLoop: false,
+                        numberOfParticles: 50,
+                        colors: Colors.primaries,
+                      ),
+                    ),
                   ],
                 ),
-              ],
+              ),
             ),
     );
   }
+}
+
+void showSurrenderDialog(BuildContext context, VoidCallback onConfirm) {
+  showDialog(
+    context: context,
+    barrierDismissible: true,
+    builder: (context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        backgroundColor: Theme.of(context).cardColor,
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 24.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.warning_amber_rounded,
+                size: 50,
+                color: Colors.redAccent,
+              ),
+              SizedBox(height: 12.h),
+              Text(
+                "Are you sure you want to surrender?",
+                style: TextStyle(
+                  color: Theme.of(context).colorScheme.tertiary,
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 8.h),
+              Text(
+                "This will end the game and your opponent will win.",
+                style: TextStyle(
+                  color: Colors.grey,
+                  fontSize: 14.sp,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 24.h),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                        backgroundColor: Theme.of(context)
+                            .colorScheme
+                            .primary
+                            .withOpacity(0.2),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                      ),
+                      child: Text(
+                        "Cancel",
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.primary,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 16.w),
+                  Expanded(
+                    child: TextButton(
+                      onPressed: onConfirm,
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.redAccent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                      ),
+                      child: Text(
+                        "Surrender",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }

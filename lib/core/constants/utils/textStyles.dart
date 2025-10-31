@@ -1,4 +1,5 @@
 // ignore: file_names
+import 'package:chess_game/core/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -39,7 +40,10 @@ class AppTextStyles {
   static TextStyle h20semi = TextStyle(
       fontSize: 20.sp, fontFamily: "Rubik", fontWeight: FontWeight.w600);
   static TextStyle h20bold = TextStyle(
-      fontSize: 20.sp, fontFamily: "Rubik", fontWeight: FontWeight.w900);
+      fontSize: 20.sp,
+      fontFamily: "Rubik",
+      fontWeight: FontWeight.w900,
+      color: white);
   static TextStyle h20extrabold = TextStyle(
       fontSize: 20.sp, fontFamily: "Rubik", fontWeight: FontWeight.w800);
   //!------------------------------18------------------------------------
@@ -59,11 +63,17 @@ class AppTextStyles {
   static TextStyle h16light = TextStyle(
       fontSize: 16.r, fontFamily: "Rubik", fontWeight: FontWeight.w300);
   static TextStyle h16regular = TextStyle(
-      fontSize: 16.sp, fontFamily: "Rubik", fontWeight: FontWeight.w400);
+      fontSize: 16.sp,
+      fontFamily: "Rubik",
+      fontWeight: FontWeight.w400,
+      color: white);
   static TextStyle h16medium = TextStyle(
       fontSize: 16.sp, fontFamily: "Rubik", fontWeight: FontWeight.w500);
   static TextStyle h16semi = TextStyle(
-      fontSize: 16.sp, fontFamily: "Rubik", fontWeight: FontWeight.w600);
+      fontSize: 16.sp,
+      fontFamily: "Rubik",
+      fontWeight: FontWeight.w600,
+      color: darkBackground);
   static TextStyle h16bold = TextStyle(
       fontSize: 16.sp, fontFamily: "Rubik", fontWeight: FontWeight.w900);
   static TextStyle h16extrabold = TextStyle(

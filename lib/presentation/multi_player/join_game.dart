@@ -1,10 +1,11 @@
+import 'package:chess_game/core/constants/utils/themeSwitchButton.dart';
 import 'package:chess_game/presentation/multi_player/multiplayer_chess_game.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:squares/squares.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:chess_game/core/constants/colors.dart'; 
 
 class JoinGame extends StatefulWidget {
   const JoinGame({super.key});
@@ -51,7 +52,6 @@ class _JoinGameState extends State<JoinGame> {
     setState(() => _loading = false);
 
     if (exists) {
-      // Set black_player in the game row
       await Supabase.instance.client
           .from('games')
           .update({'black_player': 'yahea_join'}).eq('id', roomId);
@@ -66,63 +66,150 @@ class _JoinGameState extends State<JoinGame> {
     }
   }
 
-// ...
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Join Game")),
+      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      appBar: AppBar(
+        actions: const [ThemeSwitchButton()],
+        leading: BackButton(
+          color: Theme.of(context).colorScheme.tertiary,
+        ),
+        title: Text(
+          "Join Game",
+          style: TextStyle(color: Theme.of(context).colorScheme.tertiary),
+        ),
+        backgroundColor: Theme.of(context).cardColor,
+        elevation: 0,
+        titleTextStyle: const TextStyle(color: Colors.white, fontSize: 20),
+      ),
       body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Text("Enter the Room ID your friend gave you:"),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _controller,
-              onSubmitted: (_) => _onSubmit(),
-              decoration: InputDecoration(
-                border: const OutlineInputBorder(),
-                hintText: "e.g. a1b2c3d4",
-                errorText: _error,
-              ),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _loading ? null : _onSubmit,
-              child: _loading
-                  ? const CircularProgressIndicator()
-                  : const Text("Join Game"),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AlertDialog(
-                    content: SizedBox(
-                      width: 300,
-                      height: 300,
-                      child: MobileScanner(
-                        onDetect: (barcodes) {
-                          final code = barcodes.barcodes.first.displayValue;
-                          if (code != null) {
-                            Navigator.pop(context);
-                            _controller.text = code.toString();
-                            _onSubmit();
-                          }
-                        },
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Card Container
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                     Text(
+                      "Enter the Room ID your friend gave you:",
+                      style: TextStyle(
+                        color:Theme.of(context).colorScheme.tertiary,
+                        fontSize: 18,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 20),
+                    TextField(
+                      controller: _controller,
+                      onSubmitted: (_) => _onSubmit(),
+                      decoration: InputDecoration(
+                        hintText: "e.g. a1b2c3d4",
+                        hintStyle:  TextStyle(color: Theme.of(context).colorScheme.tertiary.withOpacity(0.5)),
+                        filled: true,
+                        fillColor: Theme.of(context).scaffoldBackgroundColor.withOpacity(0.3),
+                        errorText: _error,
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                      ),
+                      style:  TextStyle(color: Theme.of(context).colorScheme.tertiary),
+                    ),
+                    const SizedBox(height: 24),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: _loading ? null : _onSubmit,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: accentAmber,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        child: _loading
+                            ? const CircularProgressIndicator(
+                                color: accentAmber,
+                              )
+                            :  Text(
+                                "Join Game",
+                                style: TextStyle(
+                                    color: Theme.of(context).colorScheme.tertiary,
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold),
+                              ),
                       ),
                     ),
-                  ),
-                );
-              },
-              child: const Text(
-                "Scan QR Code",
-                style: TextStyle(),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        onPressed: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => Dialog(
+                              backgroundColor: darkCard,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(20)),
+                              child: SizedBox(
+                                width: 300,
+                                height: 300,
+                                child: MobileScanner(
+                                  onDetect: (barcodes) {
+                                    final code =
+                                        barcodes.barcodes.first.displayValue;
+                                    if (code != null) {
+                                      Navigator.pop(context);
+                                      _controller.text = code.toString();
+                                      _onSubmit();
+                                    }
+                                  },
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: accentAmber),
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        icon: const Icon(Icons.qr_code, color: accentAmber  ),
+                        label:  Text(
+                          "Scan QR Code",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.tertiary, fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ]),
+              const SizedBox(height: 32),
+              const Text(
+                "Tip: You can scan your friend's QR code to join quickly!",
+                style: TextStyle(color: Colors.grey, fontSize: 14),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,5 +1,7 @@
 import 'package:animations/animations.dart';
 import 'package:card_swiper/card_swiper.dart';
+import 'package:chess_game/core/constants/utils/themeSwitchButton.dart';
+import 'package:chess_game/presentation/about_us/AboutUs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -37,7 +39,7 @@ class _GameMenuState extends State<GameMenu> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: white,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Padding(
         padding: EdgeInsets.all(8.w),
         child: Row(
@@ -48,7 +50,9 @@ class _GameMenuState extends State<GameMenu> {
                   SizedBox(height: 80.h),
                   Text(
                     "Be The \nking Of \nChess ",
-                    style: AppTextStyles.h32semi.copyWith(fontSize: 32.sp),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.tertiary,
+                        fontSize: 28),
                     textAlign: TextAlign.left,
                   ),
                   SizedBox(height: 100.h),
@@ -78,13 +82,29 @@ class _GameMenuState extends State<GameMenu> {
                     alignment: Alignment.bottomLeft,
                     child: Padding(
                       padding: EdgeInsets.all(12.w),
-                      child: IconButton(
-                        onPressed: () {},
-                        icon: Iconify(
-                          color: grey,
-                          La.chess_queen,
-                          size: 29.sp,
-                        ),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {
+                              Get.to(() => const AboutUsPage());
+                            },
+                            icon: Iconify(
+                              color: Theme.of(context).colorScheme.primary,
+                              La.chess_queen,
+                              size: 29.sp,
+                            ),
+                          ),
+                          //! theme Switching button
+                          // IconButton(
+                          //   onPressed: () {},
+                          //   icon: Iconify(
+                          //     color: white,
+                          //     La.sun,
+                          //     size: 29.sp,
+                          //   ),
+                          // ),
+                          const ThemeSwitchButton()
+                        ],
                       ),
                     ),
                   )
@@ -114,21 +134,33 @@ class _GameMenuState extends State<GameMenu> {
                   if (index == 0) {
                     title = "Play Multi Player";
                     subtitle = "Invite Your Friends and start playing";
-                    icon = const Iconify(Whh.friends, size: 40);
+                    icon =  Iconify(
+                      Whh.friends,
+                      size: 40,
+                      color: Theme.of(context).cardColor,
+                    );
                     onPressed = () {
                       Get.to(const Boarding());
                     };
                   } else if (index == 1) {
                     title = "Play Single Player";
                     subtitle = "Challenge the AI bot and improve your skills";
-                    icon = const Iconify(Mdi.robot_excited_outline, size: 40);
+                    icon =  Iconify(
+                      Mdi.robot_excited_outline,
+                      size: 40,
+                      color: Theme.of(context).cardColor,
+                    );
                     onPressed = () {
                       Get.to(const SinglePlayerChessGame());
                     };
                   } else {
                     title = "Game Options";
                     subtitle = "Customize board, theme, and settings";
-                    icon = const Iconify(Mi.settings, size: 40);
+                    icon = Iconify(
+                      Mi.settings,
+                      size: 40,
+                      color: Theme.of(context).cardColor,
+                    );
                     onPressed = () {
                       Get.to(const Options());
                     };

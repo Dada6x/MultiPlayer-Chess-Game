@@ -1,12 +1,10 @@
 import 'package:chess_game/core/app/controller/app_controller.dart';
-import 'package:chess_game/core/app/language/locale.dart';
+import 'package:chess_game/core/app/theme/themes.dart';
 import 'package:chess_game/presentation/game_menu/game_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -25,11 +23,7 @@ bool isOffline = !Get.find<AppController>().isOffline.value;
 void main() async {
   //! motion
   WidgetsFlutterBinding.ensureInitialized();
-  // await Motion.instance.initialize();
-  // Motion.instance.setUpdateInterval(60.fps);
-  //!
 
-  Get.put(AppController());
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: Colors.transparent,
@@ -49,32 +43,42 @@ class App extends StatelessWidget {
   const App({super.key});
   @override
   Widget build(BuildContext context) {
+    final appController = Get.put(AppController());
+
     return ScreenUtilInit(
+      
       designSize: const Size(430, 932),
-      child: GetMaterialApp(
-        translations: MyLocale(),
-        debugShowCheckedModeBanner: false,
-        title: 'Chess Game',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        home: const GameMenu(),
-      ),
+      builder: (context, child) {
+        return Obx(() => GetMaterialApp(
+              debugShowCheckedModeBanner: false,
+              title: 'Chess Game',
+              theme: appController.isDarkMode.value
+                  ? Themes().darkMode
+                  : Themes().lightMode,
+              home: const GameMenu(),
+            ));
+      },
     );
   }
 }
 
+// make the game menu more like the design 
+// make play with a friend (on the same device).but make use of the random chat Bot //! ex: withBot(go to singlePlayer(bot:true))
+
 
 //! features To add
-// online offline support 
-// move sounds
-// win confetti
-// lose/draw
-// splash screen
-// loading screen before each game
-// game menu
-// Boards theme
+// online offline support.
+// move sounds.
+// win confetti for the winner only.
+// add your name.
+// lose/draw only showing to the winner.
+// bug the confetti showing to the person who lost.
+// splash screen.
+// loading screen before each game.
+// game menu.
+// Boards theme.
 // QR code for sharing room_id
+// dialog exactly like the logout in my easyRent
 //  Localization → Multilingual support (e.g., Arabic/English).
 
 
