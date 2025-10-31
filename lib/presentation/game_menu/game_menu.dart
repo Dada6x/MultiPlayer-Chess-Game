@@ -32,7 +32,7 @@ class _GameMenuState extends State<GameMenu> {
     ImageWidget(
         imagePath:
             "assets/images/vecteezy_black-queen-chess-piece-3d_45686418.png"),
-    ImageWidget(imagePath: ""),
+    ImageWidget(imagePath: "assets/images/black.png"),
   ];
 
   @override

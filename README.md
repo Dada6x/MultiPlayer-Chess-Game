@@ -2,6 +2,8 @@
 
 A **real-time multiplayer chess game** built with **Flutter**, **Supabase**, and the **Bishop Chess Engine**, featuring smooth animations, elegant UI, and **real-time board synchronization using FEN**. Each player has a **distinct name**, displayed during online matches.
 
+![Poster](assets/images/poster.png)
+
 ---
 
 ## 🚀 Overview
@@ -184,9 +186,5 @@ flutter run
 ```
 
 ---
-
-## 👨‍💻 Developer
-
-
 
 > *Built with Flutter, Supabase, Bishop Chess Engine, and a love for clean architecture and elegant UI.*

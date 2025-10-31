@@ -108,46 +108,10 @@ class App extends StatelessWidget {
 // make an point System ?? to unlock things inside the application like themes or something like that 
 // you get points each time you win , against player or the AI
 
-/*
 
 
+//#################################################
 
-useful shit i want 
-
-
-!chess ascii 
-r n b q k b n r
-p p p p p p p p
-. . . . . . . .
-. . . . . . . .
-. . . . . . . .
-. . . . . . . .
-P P P P P P P P
-R N B Q K B N R
-
-
-
-
-!Flag
-| Flag | Meaning                                               |
-| ---- | ----------------------------------------------------- |
-| `n`  | Normal move                                           |
-| `b`  | Big pawn move (2 squares from starting rank) ← yours! |
-| `e`  | En passant capture                                    |
-| `c`  | Capture                                               |
-| `k`  | Kingside castle                                       |
-| `q`  | Queenside castle                                      |
-| `p`  | Promotion (e.g. to queen)                             |
-
-!Piece
-
-| Letter | Piece  |
-| ------ | ------ |
-| `p`    | Pawn   |
-| `n`    | Knight |
-| `b`    | Bishop |
-| `r`    | Rook   |
-| `q`    | Queen  |
-| `k`    | King   |
-
-*/
+// app design page 
+// app logo 
+//app Name 
