@@ -54,6 +54,7 @@ dependencies:
   square_bishop: ^0.3.0
   supabase_flutter: ^2.9.1
   qr_flutter: ^4.1.0
+  device_preview: ^1.2.0
   mobile_scanner: ^6.0.10
 
 dev_dependencies:
