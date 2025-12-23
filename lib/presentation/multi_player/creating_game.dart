@@ -1,7 +1,6 @@
 import 'package:bishop/bishop.dart' as bishop;
 import 'package:chess_game/presentation/options/Profile.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iconify_flutter_plus/iconify_flutter_plus.dart';
 import 'package:iconify_flutter_plus/icons/ci.dart';
@@ -111,54 +110,54 @@ class _CreatingGameState extends State<CreatingGame> {
         child: _loading
             ? const CircularProgressIndicator(color: accentAmber)
             : _error != null
-                ? Text(
-                    "Error: $_error",
-                    style: const TextStyle(color: Colors.red),
+                ? const Text(
+                    "Something Went Wrong ",
+                    style: TextStyle(color: Colors.red),
                   )
                 : Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.w),
+                    padding: EdgeInsets.symmetric(horizontal: 20),
                     child: Card(
                       color: Theme.of(context).cardColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.r),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       elevation: 10,
                       shadowColor: Colors.black54,
                       child: Padding(
-                        padding: EdgeInsets.all(20.w),
+                        padding: EdgeInsets.all(20),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
                               "Invite Your Friend",
                               style: TextStyle(
-                                fontSize: 22.sp,
+                                fontSize: 22,
                                 fontWeight: FontWeight.bold,
                                 color: Theme.of(context).colorScheme.tertiary,
                               ),
                             ),
-                            SizedBox(height: 15.h),
+                            SizedBox(height: 15),
                             Text(
                               "Share the Room ID below to start a multiplayer game.",
                               style: TextStyle(
-                                fontSize: 14.sp,
+                                fontSize: 14,
                                 color: Colors.grey,
                               ),
                               textAlign: TextAlign.center,
                             ),
-                            SizedBox(height: 20.h),
+                            SizedBox(height: 20),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 SelectableText(
                                   _roomId ?? '',
                                   style: TextStyle(
-                                    fontSize: 26.sp,
+                                    fontSize: 26,
                                     fontWeight: FontWeight.bold,
                                     color: accentAmber,
                                   ),
                                 ),
-                                SizedBox(width: 10.w),
+                                SizedBox(width: 10),
                                 IconButton(
                                   onPressed: () async {
                                     if (_roomId != null) {
@@ -169,18 +168,18 @@ class _CreatingGameState extends State<CreatingGame> {
                                   },
                                   icon: Iconify(
                                     Ci.copy,
-                                    size: 28.sp,
+                                    size: 28,
                                     color: Colors.grey[300],
                                   ),
                                 ),
                               ],
                             ),
-                            SizedBox(height: 20.h),
+                            SizedBox(height: 20),
                             if (_roomId != null)
                               Container(
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: BorderRadius.circular(15.r),
+                                  borderRadius: BorderRadius.circular(15),
                                   boxShadow: const [
                                     BoxShadow(
                                       color: Colors.black26,
@@ -194,22 +193,22 @@ class _CreatingGameState extends State<CreatingGame> {
                                   size: 170,
                                 ),
                               ),
-                            SizedBox(height: 25.h),
+                            SizedBox(height: 25),
                             SizedBox(
                               width: double.infinity,
                               child: ElevatedButton(
                                 onPressed: _startGame,
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: accentAmber,
-                                  padding: EdgeInsets.symmetric(vertical: 15.h),
+                                  padding: EdgeInsets.symmetric(vertical: 15),
                                   shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(15.r),
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
                                 ),
                                 child: Text(
                                   "Start Game",
                                   style: TextStyle(
-                                      fontSize: 18.sp,
+                                      fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                       color: Theme.of(context)
                                           .colorScheme

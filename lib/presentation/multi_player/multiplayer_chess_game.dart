@@ -3,7 +3,7 @@ import 'package:chess_game/core/constants/utils/QrScanner.dart';
 import 'package:chess_game/presentation/game_menu/game_menu.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:iconify_flutter_plus/iconify_flutter_plus.dart';
@@ -224,6 +224,7 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
       appBar: AppBar(
         actions: const [
           ThemeSwitchButton(),
+          SizedBox(width: 10,),
         ],
         leading: BackButton(
           color: Theme.of(context).colorScheme.tertiary,
@@ -243,7 +244,7 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
                 },
                 icon: Iconify(
                   Ci.copy,
-                  size: 28.sp,
+                  size: 28,
                   color: Colors.grey[350],
                 ),
               ),
@@ -341,8 +342,8 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
                             color: Theme.of(context).cardColor,
                             elevation: 10,
                             child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: 12.w, vertical: 15.h),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 15),
                               child: RepaintBoundary(
                                 child: BoardController(
                                   animatePieces: true,
@@ -423,7 +424,7 @@ class _MultiPlayerChessGameState extends State<MultiPlayerChessGame> {
                                       Navigator.of(context, rootNavigator: true)
                                           .pop();
                                       // Navigate to GameMenu
-                                      Get.offAll(() => const GameMenu());
+                                      // Get.offAll(() => const GameMenu());
                                     });
                                   },
                                   icon: const Icon(Icons.flag),
@@ -478,7 +479,7 @@ void showSurrenderDialog(BuildContext context, VoidCallback onConfirm) {
         ),
         backgroundColor: Theme.of(context).cardColor,
         child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 24.h, horizontal: 24.w),
+          padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 24),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -487,26 +488,26 @@ void showSurrenderDialog(BuildContext context, VoidCallback onConfirm) {
                 size: 50,
                 color: Colors.redAccent,
               ),
-              SizedBox(height: 12.h),
+              const SizedBox(height: 12),
               Text(
                 "Are you sure you want to surrender?",
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.tertiary,
-                  fontSize: 18.sp,
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 8.h),
-              Text(
+              const SizedBox(height: 8),
+              const Text(
                 "This will end the game and your opponent will win.",
                 style: TextStyle(
                   color: Colors.grey,
-                  fontSize: 14.sp,
+                  fontSize: 14,
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 24.h),
+              const SizedBox(height: 24),
               Row(
                 children: [
                   Expanded(
@@ -520,19 +521,19 @@ void showSurrenderDialog(BuildContext context, VoidCallback onConfirm) {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
                       child: Text(
                         "Cancel",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.sp,
+                          fontSize: 16,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(width: 16.w),
+                  const SizedBox(width: 16),
                   Expanded(
                     child: TextButton(
                       onPressed: onConfirm,
@@ -541,14 +542,14 @@ void showSurrenderDialog(BuildContext context, VoidCallback onConfirm) {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 14.h),
+                        padding: const EdgeInsets.symmetric(vertical: 14),
                       ),
-                      child: Text(
+                      child: const Text(
                         "Surrender",
                         style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
-                          fontSize: 16.sp,
+                          fontSize: 16,
                         ),
                       ),
                     ),

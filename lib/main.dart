@@ -1,6 +1,11 @@
+import 'dart:io';
+
 import 'package:chess_game/core/app/controller/app_controller.dart';
 import 'package:chess_game/core/app/theme/themes.dart';
-import 'package:chess_game/presentation/game_menu/game_menu.dart';
+import 'package:chess_game/core/constants/colors.dart';
+import 'package:chess_game/core/layout/screens/desktop_layout.dart';
+import 'package:chess_game/core/layout/screens/mobile_layout.dart';
+import 'package:chess_game/core/layout/screens/tablet_layout.dart';
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,7 +14,6 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
 
 var debug = Logger(
   printer: PrettyPrinter(
@@ -31,6 +35,9 @@ void main() async {
       statusBarColor: Colors.transparent,
     ),
   );
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
 
   await Supabase.initialize(
     url: 'https://uowxzsxqiurvurmitizt.supabase.co',
@@ -40,10 +47,13 @@ void main() async {
 
   runApp(
     DevicePreview(
-      enabled: kIsWeb,
+      backgroundColor: accentAmber,
+      isToolbarVisible: false,
+      enabled: Platform.isAndroid ? false : true,
       builder: (context) => const App(),
     ),
   );
+  // runApp(const App());
 }
 
 class App extends StatelessWidget {
@@ -58,71 +68,27 @@ class App extends StatelessWidget {
       builder: (context, child) {
         return Obx(
           () => GetMaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Chess Game',
-            theme: appController.isDarkMode.value
-                ? Themes().darkMode
-                : Themes().lightMode,
-            locale: DevicePreview.locale(context),
-            builder: DevicePreview.appBuilder,
-            home: const GameMenu(),
-          ),
+              debugShowCheckedModeBanner: false,
+              title: 'Chess Game',
+              theme: appController.isDarkMode.value
+                  ? Themes().darkMode
+                  : Themes().lightMode,
+              locale: DevicePreview.locale(context),
+              builder: DevicePreview.appBuilder,
+              home: LayoutBuilder(builder: (context, constraints) {
+                if (constraints.maxWidth >= 1280) {
+                  debug.e("DESKTOP LAYOUT");
+                  return const DesktopLayout();
+                } else if (constraints.maxWidth >= 800) {
+                  debug.e("Tablet LAYOUT");
+                  return const TabletLayout();
+                } else {
+                  debug.i("Mobile LAYOUT");
+                  return const MobileLayout();
+                }
+              })),
         );
       },
     );
   }
 }
-
-// make the game menu more like the design 
-// make play with a friend (on the same device).but make use of the random chat Bot //! ex: withBot(go to singlePlayer(bot:true))
-
-
-//! features To add
-// online offline support.
-// move sounds.
-// win confetti for the winner only.
-// add your name.
-// lose/draw only showing to the winner.
-// bug the confetti showing to the person who lost.
-// splash screen.
-// loading screen before each game.
-// game menu.
-// Boards theme.
-// QR code for sharing room_id
-// dialog exactly like the logout in my easyRent
-//  Localization → Multilingual support (e.g., Arabic/English).
-
-
-//@ bigg time idea from abdo.
-// instead of sending the Whole FEN send just the last move in this way it will still work faster and it wont render the whole chess map 
-// just the move happend 
-
-
-//!!!!!!!!!!!!!!!!!!!! make it with webSocket via that indian dude 
-// https://www.youtube.com/watch?v=Aut-wfXacXg
-//! see the Build From the Scratch UI from this dude 
-// https://www.youtube.com/watch?v=DM9E-Xz1mnU
-
-
-//! 
-// ! chess Logic
-// dead pieces
-// timer for each turn then it will pick an random move
-// dispose the room after the game is finished
-// leave the game
-// make it wait for the other player to join
-
-//@ later
-// add authentication ,
-// add usernames for each one
-// add preview , people can join to see the game but they can play or move any piece
-// make an point System ?? to unlock things inside the application like themes or something like that 
-// you get points each time you win , against player or the AI
-
-
-
-//#################################################
-// Screen Util 
-// LayoutBuilder
-//Device Preview 
-//pixel_perfect

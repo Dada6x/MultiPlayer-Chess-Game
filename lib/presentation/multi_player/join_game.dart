@@ -226,7 +226,7 @@ class _JoinGameState extends State<JoinGame> {
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
-                        icon: const Icon(Icons.qr_code, color: accentAmber),
+                        icon: const Icon(Icons.qr_code, color: accentAmber),  
                         label: Text(
                           "Scan QR Code",
                           style: TextStyle(

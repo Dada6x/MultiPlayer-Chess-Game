@@ -3,7 +3,6 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:chess_game/core/constants/utils/themeSwitchButton.dart';
 import 'package:chess_game/presentation/about_us/AboutUs.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:iconify_flutter_plus/iconify_flutter_plus.dart';
 import 'package:iconify_flutter_plus/icons/la.dart';
@@ -17,7 +16,9 @@ import 'package:chess_game/presentation/options/Profile.dart';
 import 'package:chess_game/presentation/single_player/singleplayer_chess_game.dart';
 
 class GameMenu extends StatefulWidget {
-  const GameMenu({super.key});
+  const GameMenu({
+    super.key,
+  });
 
   @override
   State<GameMenu> createState() => _GameMenuState();
@@ -40,13 +41,13 @@ class _GameMenuState extends State<GameMenu> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       body: Padding(
-        padding: EdgeInsets.all(8.w),
+        padding: const EdgeInsets.all(8),
         child: Row(
           children: [
             Expanded(
               child: Column(
                 children: [
-                  SizedBox(height: 80.h),
+                  const SizedBox(height: 80),
                   Text(
                     "Be The \nking Of \nChess ",
                     style: TextStyle(
@@ -54,7 +55,7 @@ class _GameMenuState extends State<GameMenu> {
                         fontSize: 28),
                     textAlign: TextAlign.left,
                   ),
-                  SizedBox(height: 100.h),
+                  const SizedBox(height: 100),
                   // Keep the animated transition here:
                   Expanded(
                     child: PageTransitionSwitcher(
@@ -80,7 +81,7 @@ class _GameMenuState extends State<GameMenu> {
                   Align(
                     alignment: Alignment.bottomLeft,
                     child: Padding(
-                      padding: EdgeInsets.all(12.w),
+                      padding: const EdgeInsets.all(12),
                       child: Row(
                         children: [
                           IconButton(
@@ -90,18 +91,9 @@ class _GameMenuState extends State<GameMenu> {
                             icon: Iconify(
                               color: Theme.of(context).colorScheme.primary,
                               La.chess_queen,
-                              size: 29.sp,
+                              size: 29,
                             ),
                           ),
-                          //! theme Switching button
-                          // IconButton(
-                          //   onPressed: () {},
-                          //   icon: Iconify(
-                          //     color: white,
-                          //     La.sun,
-                          //     size: 29.sp,
-                          //   ),
-                          // ),
                           const ThemeSwitchButton()
                         ],
                       ),
@@ -112,8 +104,9 @@ class _GameMenuState extends State<GameMenu> {
             ),
             SizedBox(
               height: double.infinity,
-              width: 235.w,
+              width: 235,
               child: Swiper(
+
                 scrollDirection: Axis.vertical,
                 itemCount: optionWidgets.length,
                 onIndexChanged: (index) {
@@ -124,6 +117,7 @@ class _GameMenuState extends State<GameMenu> {
                     currentIndex = index;
                   });
                 },
+                
                 itemBuilder: (context, index) {
                   late final String title;
                   late final String subtitle;
@@ -133,9 +127,9 @@ class _GameMenuState extends State<GameMenu> {
                   if (index == 0) {
                     title = "Play Multi Player";
                     subtitle = "Invite Your Friends and start playing";
-                    icon =  Iconify(
+                    icon = Iconify(
                       Whh.friends,
-                      size: 40,
+                      size: 20,
                       color: Theme.of(context).cardColor,
                     );
                     onPressed = () {
@@ -144,9 +138,9 @@ class _GameMenuState extends State<GameMenu> {
                   } else if (index == 1) {
                     title = "Play Single Player";
                     subtitle = "Challenge the AI bot and improve your skills";
-                    icon =  Iconify(
+                    icon = Iconify(
                       Mdi.robot_excited_outline,
-                      size: 40,
+                      size: 20,
                       color: Theme.of(context).cardColor,
                     );
                     onPressed = () {
@@ -157,7 +151,7 @@ class _GameMenuState extends State<GameMenu> {
                     subtitle = "Customize board, theme, and settings";
                     icon = Iconify(
                       Mi.settings,
-                      size: 40,
+                      size: 20,
                       color: Theme.of(context).cardColor,
                     );
                     onPressed = () {

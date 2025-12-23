@@ -1,6 +1,5 @@
 import 'package:chess_game/core/constants/utils/themeSwitchButton.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconify_flutter_plus/iconify_flutter_plus.dart';
 import 'package:iconify_flutter_plus/icons/la.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -27,17 +26,17 @@ class AboutUsPage extends StatelessWidget {
         icon: icon,
         label: Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             color: Colors.white,
-            fontSize: 16.sp,
+            fontSize: 16,
             fontWeight: FontWeight.bold,
           ),
         ),
         style: ElevatedButton.styleFrom(
           backgroundColor: color,
-          padding: EdgeInsets.symmetric(vertical: 12.h),
+          padding: const EdgeInsets.symmetric(vertical: 12),
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12.sp),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
       ),
@@ -83,44 +82,44 @@ class AboutUsPage extends StatelessWidget {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Avatar
-              CircleAvatar(
-                radius: 90.r,
-                backgroundImage: const AssetImage("assets/images/avatar.png"),
+              const CircleAvatar(
+                radius: 90,
+                backgroundImage: AssetImage("assets/images/avatar.png"),
               ),
-              SizedBox(height: 16.h),
+              const SizedBox(height: 16),
               Text(
                 "Yahiea Dada",
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.tertiary,
-                  fontSize: 24.sp,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 8.h),
-              Text(
+              const SizedBox(height: 8),
+              const Text(
                 "Third Year Student at \nDamascus University",
                 style: TextStyle(
                   color: Colors.grey,
-                  fontSize: 16.sp,
+                  fontSize: 16,
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20.h),
+              const SizedBox(height: 20),
 
               // About App
               Card(
                 color: Theme.of(context).cardColor,
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.sp),
+                  borderRadius: BorderRadius.circular(20),
                 ),
                 child: Padding(
                   padding:
-                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -128,25 +127,25 @@ class AboutUsPage extends StatelessWidget {
                         "About this App",
                         style: TextStyle(
                           color: Theme.of(context).colorScheme.tertiary,
-                          fontSize: 20.sp,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      SizedBox(height: 10.h),
-                      Text(
+                      const SizedBox(height: 10),
+                      const Text(
                         "This chess app was developed by me using Supabase for backend storage and authentication, "
                         "combined with the Squares FEN library to handle chess moves and board state. "
                         "It allows multiplayer chess games in real-time with smooth updates and rich UI.",
                         style: TextStyle(
                           color: Colors.grey,
-                          fontSize: 16.sp,
+                          fontSize: 16,
                         ),
                       ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 20.h),
+              const SizedBox(height: 20),
 
               // Links
               Row(
@@ -157,7 +156,7 @@ class AboutUsPage extends StatelessWidget {
                     const Iconify(La.github_alt, color: Colors.white, size: 30),
                     Colors.black87,
                   ),
-                  SizedBox(width: 16.w),
+                  const SizedBox(width: 16),
                   _buildLinkButton(
                     "LinkedIn",
                     linkedinUrl,
@@ -166,68 +165,68 @@ class AboutUsPage extends StatelessWidget {
                   ),
                 ],
               ),
-              SizedBox(height: 20.h),
+              const SizedBox(height: 20),
 
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
                   "My Projects",
                   style: TextStyle(
-                    fontSize: 22.sp,
+                    fontSize: 22,
                     fontWeight: FontWeight.bold,
                     color: Theme.of(context).colorScheme.tertiary,
                   ),
                 ),
               ),
-              SizedBox(height: 10.h),
+              const SizedBox(height: 10),
 
               // Generate project cards
               Column(
                 children: projects.map((project) {
                   return Padding(
-                    padding: EdgeInsets.only(bottom: 20.h),
+                    padding: const EdgeInsets.only(bottom: 20),
                     child: Card(
                       color: Theme.of(context).cardColor,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.sp),
+                        borderRadius: BorderRadius.circular(20),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           ClipRRect(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(20.sp),
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(20),
                             ),
                             child: Image.asset(
                               project["image"]!,
                               width: double.infinity,
-                              height: 180.h,
+                              height: 180,
                               fit: BoxFit.cover,
                             ),
                           ),
                           Padding(
-                            padding: EdgeInsets.all(16.w),
+                            padding: const EdgeInsets.all(16),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   project["title"]!,
                                   style: TextStyle(
-                                    fontSize: 20.sp,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                     color:
                                         Theme.of(context).colorScheme.tertiary,
                                   ),
                                 ),
-                                SizedBox(height: 8.h),
+                                const SizedBox(height: 8),
                                 Text(
                                   project["description"]!,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Colors.grey,
-                                    fontSize: 18.sp,
+                                    fontSize: 18,
                                   ),
                                 ),
-                                SizedBox(height: 12.h),
+                                const SizedBox(height: 12),
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: TextButton(

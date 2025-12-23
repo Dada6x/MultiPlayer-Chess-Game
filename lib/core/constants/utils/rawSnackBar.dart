@@ -1,7 +1,6 @@
 import 'package:chess_game/core/constants/colors.dart';
 import 'package:chess_game/core/constants/utils/textStyles.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 
 void showErrorSnackbar(String message) {
@@ -10,8 +9,8 @@ void showErrorSnackbar(String message) {
     message: message,
     snackPosition: SnackPosition.BOTTOM,
     backgroundColor: errorRed,
-    margin: EdgeInsets.all(16.r),
-    borderRadius: 12.r,
+    margin: const EdgeInsets.all(16),
+    borderRadius: 12,
     duration: const Duration(seconds: 3),
     icon: const Icon(Icons.error, color: white),
     snackStyle: SnackStyle.FLOATING,
@@ -24,8 +23,8 @@ void showSuccessSnackbar(String message) {
     message: message,
     snackPosition: SnackPosition.BOTTOM,
     backgroundColor: green,
-    margin: EdgeInsets.all(16.r),
-    borderRadius: 12.r,
+    margin: const EdgeInsets.all(16),
+    borderRadius: 12,
     duration: const Duration(seconds: 3),
     snackStyle: SnackStyle.FLOATING,
   );
@@ -42,8 +41,8 @@ void showSnackbarWithContext(String message, BuildContext context) {
     ),
     snackPosition: SnackPosition.BOTTOM,
     backgroundColor: Theme.of(context).colorScheme.surface,
-    margin: EdgeInsets.all(22.r),
-    borderRadius: 12.r,
+    margin: const EdgeInsets.all(22),
+    borderRadius: 12,
     duration: const Duration(seconds: 3),
     snackStyle: SnackStyle.FLOATING,
   );

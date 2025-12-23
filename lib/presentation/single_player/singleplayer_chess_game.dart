@@ -3,7 +3,6 @@ import 'package:chess_game/core/constants/utils/piece_set_custom.dart';
 import 'package:chess_game/core/constants/utils/themeSwitchButton.dart';
 import 'package:confetti/confetti.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:iconify_flutter_plus/iconify_flutter_plus.dart';
 import 'package:iconify_flutter_plus/icons/mdi.dart';
 import 'package:square_bishop/square_bishop.dart';
@@ -130,7 +129,12 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       appBar: AppBar(
-        actions: const [ThemeSwitchButton()],
+        actions: const [
+          ThemeSwitchButton(),
+          SizedBox(
+            width: 10,
+          ),
+        ],
         leading: BackButton(
           color: Theme.of(context).colorScheme.tertiary,
         ),
@@ -145,10 +149,10 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
       ),
       body: SafeArea(
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 16.h),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
           child: Column(
             children: [
-              SizedBox(height: 20.h),
+              const SizedBox(height: 20),
               Card(
                 color: Theme.of(context).cardColor,
                 elevation: 10,
@@ -182,9 +186,9 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
                   color: Theme.of(context).cardColor,
                   elevation: 10,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.r)),
+                      borderRadius: BorderRadius.circular(20)),
                   child: Padding(
-                    padding: EdgeInsets.all(12.w),
+                    padding: const EdgeInsets.all(12),
                     child: Stack(
                       alignment: Alignment.center,
                       children: [
@@ -230,16 +234,16 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
                   ),
                 ),
               ),
-              SizedBox(height: 20.h),
+              const SizedBox(height: 20),
               Text(
                 aiThinking ? "AI is thinking..." : "Your turn",
                 style: TextStyle(
-                  fontSize: 18.sp,
+                  fontSize: 18,
                   fontWeight: FontWeight.w500,
                   color: Theme.of(context).colorScheme.tertiary,
                 ),
               ),
-              SizedBox(height: 12.h),
+              const SizedBox(height: 12),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -250,7 +254,7 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
                     backgroundColor: Theme.of(context).cardColor,
                     child: const Icon(Icons.undo, color: accentAmber),
                   ),
-                  SizedBox(width: 16.w),
+                  const SizedBox(width: 16),
                   FloatingActionButton.small(
                     heroTag: "restart",
                     tooltip: "New Game",
@@ -260,7 +264,7 @@ class _SinglePlayerChessGameState extends State<SinglePlayerChessGame> {
                   ),
                 ],
               ),
-              SizedBox(height: 40.h),
+              const SizedBox(height: 40),
             ],
           ),
         ),

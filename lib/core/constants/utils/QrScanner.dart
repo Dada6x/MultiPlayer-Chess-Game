@@ -1,7 +1,6 @@
 import 'package:chess_game/core/constants/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class QrIconButton extends StatelessWidget {
   final String roomId;
@@ -12,30 +11,30 @@ class QrIconButton extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (context) {
         return Padding(
-          padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 20.w),
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              const Text(
                 "Share this with your friend",
                 style: TextStyle(
-                  fontSize: 20.sp,
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 20.h),
+              const SizedBox(height: 20),
               QrImageView(
                 data: roomId,
                 version: QrVersions.auto,
-                size: 250.w,
+                size: 250,
                 foregroundColor: Theme.of(context).colorScheme.tertiary,
               ),
-              SizedBox(height: 20.h),
+              const SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(backgroundColor: accentAmber),
                 onPressed: () => Navigator.pop(context),
