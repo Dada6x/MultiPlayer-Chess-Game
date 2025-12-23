@@ -63,12 +63,13 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final appController = Get.put(AppController());
-
     return ScreenUtilInit(
       designSize: const Size(430, 932),
       builder: (context, child) {
         return Obx(
-          () => GetMaterialApp(
+          () => Directionality(
+            textDirection: TextDirection.ltr,
+            child: GetMaterialApp(
               debugShowCheckedModeBanner: false,
               title: 'Chess Game',
               theme: appController.isDarkMode.value
@@ -76,18 +77,19 @@ class App extends StatelessWidget {
                   : Themes().lightMode,
               locale: DevicePreview.locale(context),
               builder: DevicePreview.appBuilder,
-              home: LayoutBuilder(builder: (context, constraints) {
-                if (constraints.maxWidth >= 1280) {
-                  debug.e("DESKTOP LAYOUT");
-                  return const DesktopLayout();
-                } else if (constraints.maxWidth >= 800) {
-                  debug.e("Tablet LAYOUT");
-                  return const TabletLayout();
-                } else {
-                  debug.i("Mobile LAYOUT");
-                  return const MobileLayout();
-                }
-              })),
+              home: LayoutBuilder(
+                builder: (context, constraints) {
+                  if (constraints.maxWidth >= 1280) {
+                    return const DesktopLayout();
+                  } else if (constraints.maxWidth >= 800) {
+                    return const TabletLayout();
+                  } else {
+                    return const MobileLayout();
+                  }
+                },
+              ),
+            ),
+          ),
         );
       },
     );
