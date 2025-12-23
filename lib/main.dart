@@ -14,6 +14,7 @@ import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter/foundation.dart';
 
 var debug = Logger(
   printer: PrettyPrinter(
@@ -49,7 +50,7 @@ void main() async {
     DevicePreview(
       backgroundColor: accentAmber,
       isToolbarVisible: false,
-      enabled: Platform.isAndroid ? false : true,
+      enabled: kIsWeb,
       builder: (context) => const App(),
     ),
   );
