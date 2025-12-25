@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:chess_game/core/constants/colors.dart';
@@ -71,46 +70,46 @@ class _ProfilePageState extends State<ProfilePage> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator(color: accentAmber))
           : Padding(
-              padding: EdgeInsets.all(20.w),
+              padding: EdgeInsets.all(20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     'Set Your Name',
                     style: TextStyle(
-                      fontSize: 22.sp,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
                       color: Theme.of(context).colorScheme.tertiary,
                     ),
                   ),
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 20),
                   TextField(
                     controller: _nameController,
                     decoration: InputDecoration(
                       hintText: 'Enter your name',
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(15.r),
+                        borderRadius: BorderRadius.circular(15),
                       ),
                       filled: true,
                       fillColor: Theme.of(context).cardColor,
                     ),
                   ),
-                  SizedBox(height: 30.h),
+                  SizedBox(height: 30),
                   SizedBox(
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: _saveName,
                       style: ElevatedButton.styleFrom(
                         backgroundColor: accentAmber,
-                        padding: EdgeInsets.symmetric(vertical: 15.h),
+                        padding: EdgeInsets.symmetric(vertical: 15),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15.r),
+                          borderRadius: BorderRadius.circular(15),
                         ),
                       ),
                       child: Text(
                         'Save Name',
                         style: TextStyle(
-                          fontSize: 18.sp,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                           color: Theme.of(context).colorScheme.tertiary,
                         ),
